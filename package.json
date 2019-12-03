@@ -1,0 +1,11 @@
+{
+  "name": "base-frontend-helpers",
+  "version": "1.0.0",
+  "dependencies": {
+    "base-frontend-components": "git+ssh://git@github.com/kakadu-dev/base-frontend-components.git",
+    "lodash": "^4.17.11",
+    "react-native-paper": "v3.0.0-alpha.1",
+    "redux-persist": "^5.10.0",
+    "redux-saga": "^1.0.2"
+  }
+}
