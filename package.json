@@ -19,5 +19,8 @@
     "bugs": {
         "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
     },
-    "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme"
+    "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    }
 }
