@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import DataProvider from '../helpers/DataProvider'
 import { GeneratorHelper } from '../helpers/GeneratorHelper'
 
 /**

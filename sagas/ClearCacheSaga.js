@@ -8,12 +8,12 @@ import { CacheHelper } from '../helpers/CacheHelper'
  * @return {IterableIterator<*>}
  * @constructor
  */
-export const ClearCache = function* ({keys}) {
-    if (!keys || keys.length === 0) {
-        return
-    }
+export const ClearCache = function* ({ keys }) {
+	if (!keys || keys.length === 0) {
+		return
+	}
 
-    keys.map(uniqueKey => {
-        CacheHelper.clearOldCache(uniqueKey)
-    })
+	keys.map(uniqueKey => {
+		CacheHelper.clearOldCache(uniqueKey)
+	})
 }
