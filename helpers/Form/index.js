@@ -4,7 +4,7 @@ import React, {
 	Component,
 	Fragment,
 } from 'react'
-import BaseForm from 'base-frontend-components/forms/BaseForm'
+import BaseForm from '../../forms/BaseForm'
 import { TYPE } from '../Client'
 import {
 	HelperText,

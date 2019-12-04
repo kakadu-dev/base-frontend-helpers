@@ -4,7 +4,6 @@ import {
 	put,
 	select,
 } from 'redux-saga/effects'
-import { UsersStateSelectors } from 'base-frontend-components/modules/user'
 import DataProvider from '../DataProvider'
 import RequestActionHelper from './RequestActionHelper'
 
@@ -143,15 +142,16 @@ export default class SagasHelper
 	 * Add customer id to request body
 	 *
 	 * @param {SearchQuery} searchQuery
+	 * @param {function} userSelector
 	 *
 	 * @return {IterableIterator<SelectEffect>}
 	 */
-	static* beforeAddCustomerId(searchQuery)
+	static* beforeAddCustomerId(searchQuery, userSelector)
 	{
 		const body = searchQuery.getBody()
 
 		if (!body.customerId) {
-			const currentUser = yield select(UsersStateSelectors.getUser)
+			const currentUser = yield select(userSelector)
 
 			// Add user id
 			body.customerId = currentUser.result.id

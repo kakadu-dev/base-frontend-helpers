@@ -1,4 +1,4 @@
-import SearchQuery from 'base-frontend-components/helpers/DataProvider/SearchQuery'
+import SearchQuery from '../DataProvider/SearchQuery'
 import { PURGE } from 'redux-persist'
 import DataProvider from '../DataProvider'
 import ResponseHelper from '../ResponseHelper'

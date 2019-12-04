@@ -1,4 +1,4 @@
-import { hp } from 'base-frontend-components/helpers/Responsive'
+import { hp } from './Responsive'
 
 /**
  * Loader helper
