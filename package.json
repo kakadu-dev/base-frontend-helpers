@@ -1,7 +1,23 @@
 {
-    "name": "base-frontend-helpers",
+    "name": "@kakadu-dev/base-frontend-helpers",
     "version": "1.0.0",
     "dependencies": {
         "lodash": "^4.17.11"
-    }
+    },
+    "description": "Base frontend helpers for reactjs and react native",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kakadu-dev/base-frontend-helpers.git"
+    },
+    "keywords": [
+        "helpers",
+        "react",
+        "native"
+    ],
+    "author": "Yarmaliuk Mikhail",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
+    },
+    "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme"
 }
