@@ -1,5 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import * as PropTypes from 'prop-types'
-import React from 'react'
+import { forwardRef } from 'react'
 
 /**
  * Scroll to form input
@@ -24,7 +25,7 @@ export const scrollToInput = (errorInput, scrollView, callback = () => null) => 
  *
  * @return {*}
  */
-export const WrapView = React.forwardRef((props, ref) => {
+export const WrapView = forwardRef((props, ref) => {
 	const {
 			  component,
 			  ...newProps

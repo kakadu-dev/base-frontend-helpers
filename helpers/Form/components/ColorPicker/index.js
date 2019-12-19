@@ -3,13 +3,13 @@ import * as PropTypes from 'prop-types'
 import { forwardRef } from 'react'
 
 /**
- * Date input form
+ * Barcode input
  *
  * @param {*} props
  *
  * @return {*}
  */
-export const DateInput = forwardRef((props, ref) => {
+export const ColorPicker = forwardRef((props, ref) => {
 	const {
 			  component,
 			  ...newProps
@@ -18,10 +18,10 @@ export const DateInput = forwardRef((props, ref) => {
 	return component({ ...newProps, ref })
 })
 
-DateInput.propTypes = {
+ColorPicker.propTypes = {
 	component: PropTypes.func,
 }
 
-DateInput.defaultProps = {
+ColorPicker.defaultProps = {
 	component: () => null,
 }

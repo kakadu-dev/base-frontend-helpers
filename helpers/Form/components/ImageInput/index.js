@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import * as PropTypes from 'prop-types'
-import React from 'react'
+import { forwardRef } from 'react'
 
 /**
  * Image input form
@@ -9,7 +9,7 @@ import React from 'react'
  *
  * @return {*}
  */
-export const ImageInput = React.forwardRef((props, ref) => {
+export const ImageInput = forwardRef((props, ref) => {
 	const {
 			  component,
 			  ...newProps

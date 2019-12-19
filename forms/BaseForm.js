@@ -9,7 +9,7 @@ export default class BaseForm
 	/**
 	 * Input types
 	 *
-	 * @type {{INPUT: string, DROPDOWN: string, CUSTOM: string, AUTOCOMPLETE: string, TOGGLE: boolean, EDITOR: string}}
+	 * @type {object}
 	 */
 	static TYPES = {
 		INPUT:        'input',
@@ -21,12 +21,13 @@ export default class BaseForm
 		TOGGLE:       'toggle',
 		EDITOR:       'editor',
 		BARCODE:      'barcode',
+		COLOR_PICKER: 'color_picker',
 	}
 
 	/**
 	 * Input mask types
 	 *
-	 * @type {{PHONE: string}}
+	 * @type {object}
 	 */
 	static MASK_TYPES = {
 		PHONE:         'phone',

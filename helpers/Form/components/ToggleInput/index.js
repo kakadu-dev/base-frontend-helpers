@@ -1,5 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import * as PropTypes from 'prop-types'
-import React from 'react'
+import { forwardRef } from 'react'
 
 /**
  * Toggle input form
@@ -8,7 +9,7 @@ import React from 'react'
  *
  * @return {*}
  */
-export const ToggleInput = React.forwardRef((props, ref) => {
+export const ToggleInput = forwardRef((props, ref) => {
 	const {
 			  component,
 			  ...newProps

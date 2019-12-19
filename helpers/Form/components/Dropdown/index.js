@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import * as PropTypes from 'prop-types'
 
 /**
@@ -8,18 +9,18 @@ import * as PropTypes from 'prop-types'
  * @return {*}
  */
 export const DropdownInput = props => {
-    const {
-              component,
-              ...newProps
-          } = props
+	const {
+			  component,
+			  ...newProps
+		  } = props
 
-    return component(newProps)
+	return component(newProps)
 }
 
 DropdownInput.propTypes = {
-    component: PropTypes.func,
+	component: PropTypes.func,
 }
 
 DropdownInput.defaultProps = {
-    component: () => null
+	component: () => null,
 }

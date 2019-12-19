@@ -1,9 +1,6 @@
 import _ from 'lodash'
 import * as PropTypes from 'prop-types'
-import React, {
-	Component,
-	Fragment,
-} from 'react'
+import React, { Component } from 'react'
 import BaseForm from '../../forms/BaseForm'
 import { TYPE } from '../Client'
 import {
@@ -13,6 +10,7 @@ import {
 } from './components'
 import { AutocompleteInput } from './components/AutocompleteInput'
 import { BarcodeInput } from './components/BarcodeInput'
+import { ColorPicker } from './components/ColorPicker'
 import { DateInput } from './components/DateInput'
 import { DropdownInput } from './components/Dropdown'
 import { Editor } from './components/Editor'
@@ -336,7 +334,7 @@ export class FormComponent extends Component
 	 */
 	getInputProps = (element) => {
 		const { values, labels } = this.state
-		const { inputProps } = this.props
+		const { inputProps }     = this.props
 		const { name }           = element
 
 		const props      = this.getElementProps(element)
@@ -708,6 +706,30 @@ export class FormComponent extends Component
 	}
 
 	/**
+	 * Render color picker
+	 *
+	 * @param {object} element
+	 * @param {object} addProps
+	 *
+	 * @return {*}
+	 */
+	renderColorPicker = (element, addProps) => {
+		const inputProps = {
+			...this.getInputProps(element),
+			...addProps,
+		}
+
+		return (
+			<ColorPicker
+				ref={i => {
+					this.nativeInputs[element.name] = i
+				}}
+				{...inputProps}
+			/>
+		)
+	}
+
+	/**
 	 * Render form inputs
 	 *
 	 * @return {*}
@@ -718,49 +740,47 @@ export class FormComponent extends Component
 
 		const instance = this.getFormInstance()
 
-		return (
-			<Fragment>
-				{instance.map((element, index) => {
-					if (this.isExclude(element)) {
-						return false
-					}
+		return instance.map((element, index) => {
+			if (this.isExclude(element)) {
+				return false
+			}
 
-					const error        = this.getError(element)
-					const hint         = this.getHint(element)
-					const resultProps  = this.parentGetInputProps(element, { error })
-					const helperProps  = modifyHelperProps(element, this.parentGetHelper(element, {
-						type:    error && 'error' || 'info',
-						visible: error || hint,
-						text:    error || hint,
-					}))
-					const wrapperProps = this.parentGetWrapper({
-						ref:   i => {
-							this.inputs[element.name] = i
-						},
-						key:   this.getUniqueKey(element, index),
-						style: this.constructor.getElementContainerStyles(element),
-					})
+			const error        = this.getError(element)
+			const hint         = this.getHint(element)
+			const resultProps  = this.parentGetInputProps(element, { error })
+			const helperProps  = modifyHelperProps(element, this.parentGetHelper(element, {
+				type:    error && 'error' || 'info',
+				visible: error || hint,
+				text:    error || hint,
+			}))
+			const wrapperProps = this.parentGetWrapper({
+				ref:   i => {
+					this.inputs[element.name] = i
+				},
+				key:   this.getUniqueKey(element, index),
+				style: this.constructor.getElementContainerStyles(element),
+			})
 
-					return (
-						<WrapView {...wrapperProps}>
-							{{
-								[BaseForm.TYPES.INPUT]:        this.renderTextInput,
-								[BaseForm.TYPES.DROPDOWN]:     this.renderDropdown,
-								[BaseForm.TYPES.CUSTOM]:       this.renderCustom,
-								[BaseForm.TYPES.AUTOCOMPLETE]: this.renderAutocomplete,
-								[BaseForm.TYPES.DATE]:         this.renderDate,
-								[BaseForm.TYPES.IMAGE]:        this.renderImage,
-								[BaseForm.TYPES.TOGGLE]:       this.renderToggleInput,
-								[BaseForm.TYPES.EDITOR]:       this.renderEditor,
-								[BaseForm.TYPES.BARCODE]:      this.renderBarcodeInput,
-							}[this.getInputType(element)](element, resultProps)}
+			return (
+				<WrapView {...wrapperProps}>
+					{{
+						[BaseForm.TYPES.INPUT]:        this.renderTextInput,
+						[BaseForm.TYPES.DROPDOWN]:     this.renderDropdown,
+						[BaseForm.TYPES.CUSTOM]:       this.renderCustom,
+						[BaseForm.TYPES.AUTOCOMPLETE]: this.renderAutocomplete,
+						[BaseForm.TYPES.DATE]:         this.renderDate,
+						[BaseForm.TYPES.IMAGE]:        this.renderImage,
+						[BaseForm.TYPES.TOGGLE]:       this.renderToggleInput,
+						[BaseForm.TYPES.EDITOR]:       this.renderEditor,
+						[BaseForm.TYPES.BARCODE]:      this.renderBarcodeInput,
+						[BaseForm.TYPES.COLOR_PICKER]: this.renderColorPicker,
+					}[this.getInputType(element)](element, resultProps)}
 
-							<HelperText {...helperProps} />
-						</WrapView>
-					)
-				})}
-			</Fragment>
-		)
+					<HelperText {...helperProps} />
+				</WrapView>
+			)
+		})
+
 	}
 }
 
