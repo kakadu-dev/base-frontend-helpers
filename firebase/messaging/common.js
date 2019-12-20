@@ -22,6 +22,12 @@ export default class AbstractFirebaseMessaging
 	_listners = {}
 
 	/**
+	 * @type {function|null}
+	 * @protected
+	 */
+	_refreshTokenListner = null
+
+	/**
 	 * @type {boolean}
 	 * @protected
 	 */
@@ -227,5 +233,47 @@ export default class AbstractFirebaseMessaging
 	unsubscribeFromTopic(name, includePlatform = false)
 	{
 		return this
+	}
+
+	/**
+	 * Set refresh token listner
+	 *
+	 * @param {function} callback
+	 *
+	 * @return {FirebaseMessaging}
+	 */
+	setRefreshTokenListner(callback)
+	{
+		this._refreshTokenListner = callback
+
+		return this
+	}
+
+	/**
+	 * Remove refresh token listner
+	 *
+	 * @param {function} callback
+	 *
+	 * @return {FirebaseMessaging}
+	 */
+	removeRefreshTokenListner()
+	{
+		this._refreshTokenListner = null
+
+		return this
+	}
+
+	/**
+	 * Recieve new user token
+	 *
+	 * @param {string} token
+	 *
+	 * @return {undefined}
+	 */
+	recieveUserToken(token)
+	{
+		if (this._refreshTokenListner) {
+			this._refreshTokenListner(token)
+		}
 	}
 }
