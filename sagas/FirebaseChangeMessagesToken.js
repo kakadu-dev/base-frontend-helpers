@@ -46,7 +46,16 @@ export const FirebaseChangeMessagesToken = function* () {
         const pushToken = yield take(tokenChannel)
 
         if (pushToken) {
-            yield FirebaseMessaging.getInstance().recieveUserToken(pushToken)
+            const result = yield FirebaseMessaging.getInstance().recieveUserToken(pushToken)
+
+            if (!result) {
+                // Wait success recieve
+                if (timeout) {
+                    clearTimeout(timeout)
+                }
+
+                timeout = setTimeout(() => tokenChannel.put(pushToken), 5000)
+            }
         }
     }
 }

@@ -238,7 +238,7 @@ export default class AbstractFirebaseMessaging
     /**
      * Set refresh token listner
      *
-     * @param {function} callback
+     * @param {function(): boolean} callback
      *
      * @return {FirebaseMessaging}
      */
@@ -251,8 +251,6 @@ export default class AbstractFirebaseMessaging
 
     /**
      * Remove refresh token listner
-     *
-     * @param {function} callback
      *
      * @return {FirebaseMessaging}
      */
@@ -268,12 +266,14 @@ export default class AbstractFirebaseMessaging
      *
      * @param {string} token
      *
-     * @return {undefined}
+     * @return {boolean}
      */
     * recieveUserToken(token)
     {
         if (this._refreshTokenListner) {
-            yield this._refreshTokenListner(token)
+            return yield this._refreshTokenListner(token)
         }
+
+        return true
     }
 }
