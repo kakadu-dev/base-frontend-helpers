@@ -1,8 +1,9 @@
-import { PLATFORM } from '../../helpers/Client'
 import NotificationsIOS, {
 	NotificationsAndroid,
 	PendingNotifications,
 } from 'react-native-notifications'
+import { PLATFORM } from '../../helpers/Client'
+import { GeneratorHelper } from '../../helpers/GeneratorHelper'
 import firebase from '../index'
 import AbstractFirebaseMessaging from './common'
 import PushNotification from './notification'
@@ -12,6 +13,12 @@ import PushNotification from './notification'
  */
 export class FirebaseMessaging extends AbstractFirebaseMessaging
 {
+	/**
+	 * @type {number}
+	 * @private
+	 */
+	_attemptsResolveUserToken = 0
+
 	/**
 	 * Get permissions
 	 *
@@ -26,13 +33,55 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 				.messaging()
 				.hasPermission()
 				.then(enabled => {
-					if (!enabled) {
-						NotificationsIOS.requestPermissions(categories)
+					NotificationsIOS.requestPermissions(categories)
+					NotificationsIOS.addEventListener('remoteNotificationsRegistered', this._resolveUserToken)
+
+					// For update push token, if permissions was disabled, or update push token
+					if (enabled) {
+						this._resolveUserToken()
 					}
 				})
+		} else {
+			// For update push token, if permissions was disabled, or update push token
+			this._resolveUserToken()
 		}
 
 		return super.getPermissions()
+	}
+
+	/**
+	 *  Resolve user token, and send to server:
+	 *  - after accept push notifications permissions (ios)
+	 *  - after switch on push notifications permissions and run app
+	 *
+	 * @private
+	 *
+	 * @return {boolean}
+	 */
+	async _resolveUserToken(token)
+	{
+		console.log('TOKEN asd: ', token)
+
+		this._iosResolvePermissions = true
+
+		const firebaseToken = await this.getUserToken()
+		const result        = GeneratorHelper.executeCallApi(this.recieveUserToken(firebaseToken))
+
+		if (!result && this._attemptsResolveUserToken < 5) {
+			setTimeout(() => {
+				this._resolveUserToken()
+			}, 7000)
+
+			this._attemptsResolveUserToken++
+
+			return false
+		}
+
+		if (PLATFORM === 'ios') {
+			NotificationsIOS.removeEventListener('remoteNotificationsRegistered', this._resolveUserToken)
+		}
+
+		return true
 	}
 
 	/**

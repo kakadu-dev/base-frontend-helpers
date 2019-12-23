@@ -46,6 +46,12 @@ export default class AbstractFirebaseMessaging
     _environment = 'dev'
 
     /**
+     * @type {boolean}
+     * @protected
+     */
+    _iosResolvePermissions = false
+
+    /**
      * Get instance
      *
      * @param {string} env current _environment
@@ -99,7 +105,7 @@ export default class AbstractFirebaseMessaging
     getUserToken()
     {
         return new Promise((resolve, reject) => {
-            if (this._isEmulator && PLATFORM === 'ios') {
+            if ((this._isEmulator || !this._iosResolvePermissions) && PLATFORM === 'ios') {
                 resolve(null)
             }
 
@@ -128,7 +134,7 @@ export default class AbstractFirebaseMessaging
         this._setListners()
 
         if (!this._listners[type]) {
-            this._listners[type] = {}
+            this._listners[type] = []
         }
 
         this._listners[type].push(callback)
