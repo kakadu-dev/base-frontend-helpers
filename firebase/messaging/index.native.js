@@ -103,7 +103,8 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 			.then(notification => {
 				this._handleNotification(notification, {
 					action: {
-						identifier: 'default.action'
+						identifier: 'default.action',
+						isInit: 	true,
 					}
 				})
 			})

@@ -39,6 +39,12 @@ export default class PushNotification
 	 */
 	_androidIsForeground = false
 
+	/**
+	 * @type {boolean}
+	 * @private
+	 */
+	_isInitNotification = false
+
     /**
      * PushNotification constructor
      *
@@ -54,6 +60,7 @@ export default class PushNotification
         	identifier,
 		  	completion,
 		  	isForeground,
+		  	isInit,
         } 			   = params
 
         this._data = data
@@ -67,8 +74,12 @@ export default class PushNotification
         	this._completionCallback = completion
 		}
 
-        if (isForeground !== undefined) {
+        if (isForeground) {
         	this._androidIsForeground = isForeground
+		}
+
+        if (isInit) {
+        	this._isInitNotification = isInit
 		}
     }
 
