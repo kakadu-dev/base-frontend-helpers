@@ -113,6 +113,15 @@ export default class PushNotification
     }
 
 	/**
+	 * Click on notification and run app (app not running)
+	 *
+	 * @return {boolean}
+	 */
+	isInit = () => {
+    	return this._isInitNotification
+	}
+
+	/**
 	 * Get open identifier
 	 *
 	 * @return {string}
