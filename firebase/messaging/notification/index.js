@@ -59,7 +59,7 @@ export default class PushNotification
 					 || notification && notification.data || {}
 
 		const {
-				  action: { identifier },
+				  action,
 				  completion,
 				  isForeground,
 				  isInit,
@@ -68,8 +68,8 @@ export default class PushNotification
 		this._data = data
 		this._type = data && data.type
 
-		if (identifier) {
-			this._openIdentifier = identifier
+		if (action && action.identifier) {
+			this._openIdentifier = action.identifier
 		}
 
 		if (completion) {
