@@ -3,54 +3,127 @@
  */
 export default class PushNotification
 {
+    /**
+     * Notification type
+     *
+     * @type {string}
+     * @private
+     */
+    _type = 'none'
+
+    /**
+     * Notification payload data
+     *
+     * @type {object}
+     * @private
+     */
+    _data = {}
+
+    /**
+     * @type {null}
+     * @private
+     */
+    _openIdentifier = null
+
 	/**
-	 * Notification type
+	 * Remove notification from status bar
 	 *
-	 * @type {string}
+	 * @type {null|function}
 	 * @private
 	 */
-	_type = 'none'
+	_completionCallback = null
 
 	/**
-	 * Notification payload data
-	 *
-	 * @type {object}
+	 * @type {boolean}
 	 * @private
 	 */
-	_data = {}
+	_androidIsForeground = false
+
+    /**
+     * PushNotification constructor
+     *
+     * @param {object} notification
+     * @param {object} params
+     *
+     * @return {undefined}
+     */
+    constructor(notification, params = {})
+    {
+        const { data } = notification.getData && notification.getData() || notification || {}
+        const {
+        	identifier,
+		  	completion,
+		  	isForeground,
+        } 			   = params
+
+        this._data = data
+        this._type = data && data.type
+
+        if (identifier) {
+            this._openIdentifier = identifier
+        }
+
+        if (completion) {
+        	this._completionCallback = completion
+		}
+
+        if (isForeground !== undefined) {
+        	this._androidIsForeground = isForeground
+		}
+    }
+
+    /**
+     * Get notification type
+     *
+     * @see NotificationTypes
+     *
+     * @return {string}
+     */
+    getType = () => {
+        return this._type
+    }
+
+    /**
+     * Get notification payload data
+     *
+     * @return {object}
+     */
+    getData = () => {
+        return this._data
+    }
+
+    /**
+     * Click on push notification in status bar
+     *
+     * @return {boolean}
+     */
+    isOpened = () => {
+        return this._openIdentifier !== null
+    }
 
 	/**
-	 * PushNotification constructor
-	 *
-	 * @param {object} notification
-	 *
-	 * @return {undefined}
-	 */
-	constructor(notification)
-	{
-		const { data } = notification.getData && notification.getData() || notification || {}
-
-		this._data = data
-		this._type = data && data.type
-	}
-
-	/**
-	 * Get notification type
-	 *
-	 * @see NotificationTypes
+	 * Get open identifier
 	 *
 	 * @return {string}
 	 */
-	getType = () => {
-		return this._type
+	getOpenIdentifier = () => {
+    	return this._openIdentifier
 	}
 
 	/**
-	 * Get notification payload data
+	 * Run complete callback
+	 * Remove notification from status bar
 	 *
-	 * @return {object}
+	 * Only IOS params:
+	 * { alert: false, sound: false, badge: false }
+	 *
+	 * @param {object} params
+	 *
+	 * @return {undefined}
 	 */
-	getData = () => {
-		return this._data
+	runComplete = params => {
+		if (this._completionCallback) {
+			this._completionCallback(params)
+		}
 	}
 }

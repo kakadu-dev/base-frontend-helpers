@@ -100,7 +100,13 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 		// Handle init notification (open app)
 		(PLATFORM === 'ios' ? NotificationsIOS : PendingNotifications)
 			.getInitialNotification()
-			.then(this._handleNotification)
+			.then(notification => {
+				this._handleNotification(notification, {
+					action: {
+						identifier: 'default.action'
+					}
+				})
+			})
 
 		if (PLATFORM === 'ios') {
 			// Handle IOS foreground notifications
@@ -133,11 +139,16 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 
 				this._handleNotification(notification, {
 					completion,
+					isForeground,
 				}, completion)
 			})
 			// Handle Android open notification
 			NotificationsAndroid.setNotificationOpenedListener(notification => {
-				this._handleNotification(notification)
+				this._handleNotification(notification, {
+					action: {
+						identifier: 'default.android.action'
+					}
+				})
 			})
 		}
 
@@ -156,9 +167,7 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	 */
 	_handleNotification = (notification, params, falseCallback) => {
 		if (notification) {
-			const notif = new PushNotification(notification)
-
-			super.receivedNotification(notif, falseCallback)
+			super.receivedNotification(new PushNotification(notification, params), falseCallback)
 		}
 	}
 
