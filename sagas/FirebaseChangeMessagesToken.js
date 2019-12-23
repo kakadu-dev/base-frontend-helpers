@@ -41,6 +41,7 @@ export const FirebaseChangeMessagesToken = function* () {
     let timeout = null
 
     firebase.messaging().onTokenRefresh(onChangeToken)
+    FirebaseMessaging.getInstance().onTokenRefresh(onChangeToken)
 
     while (true) {
         const pushToken = yield take(tokenChannel)

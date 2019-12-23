@@ -3,7 +3,6 @@ import NotificationsIOS, {
 	PendingNotifications,
 } from 'react-native-notifications'
 import { PLATFORM } from '../../helpers/Client'
-import { GeneratorHelper } from '../../helpers/GeneratorHelper'
 import firebase from '../index'
 import AbstractFirebaseMessaging from './common'
 import PushNotification from './notification'
@@ -28,23 +27,20 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	 */
 	getPermissions(categories)
 	{
-		if (PLATFORM === 'ios') {
-			firebase
-				.messaging()
-				.hasPermission()
-				.then(enabled => {
+		firebase
+			.messaging()
+			.hasPermission()
+			.then(enabled => {
+				if (PLATFORM === 'ios') {
+					NotificationsIOS.addEventListener('remoteNotificationsRegistered', () => this._resolveUserToken())
 					NotificationsIOS.requestPermissions(categories)
-					NotificationsIOS.addEventListener('remoteNotificationsRegistered', this._resolveUserToken)
+				}
 
-					// For update push token, if permissions was disabled, or update push token
-					if (enabled) {
-						this._resolveUserToken()
-					}
-				})
-		} else {
-			// For update push token, if permissions was disabled, or update push token
-			this._resolveUserToken()
-		}
+				// For update push token, if permissions was disabled, or update push token
+				if (enabled) {
+					setTimeout(() => this._resolveUserToken(), 3000)
+				}
+			})
 
 		return super.getPermissions()
 	}
@@ -58,25 +54,24 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	 *
 	 * @return {boolean}
 	 */
-	async _resolveUserToken(token)
+	async _resolveUserToken()
 	{
 		this._iosResolvePermissions = true
 
 		const firebaseToken = await this.getUserToken()
-		const result        = GeneratorHelper.executeCallApi(this.recieveUserToken(firebaseToken))
 
-		if (!result && this._attemptsResolveUserToken < 5) {
-			setTimeout(() => {
-				this._resolveUserToken()
-			}, 7000)
+		if (!firebaseToken && this._attemptsResolveUserToken < 5) {
+			setTimeout(() => this._resolveUserToken(), 7000)
 
 			this._attemptsResolveUserToken++
 
 			return false
 		}
 
+		this._onTokenRefreshCallback(firebaseToken)
+
 		if (PLATFORM === 'ios') {
-			NotificationsIOS.removeEventListener('remoteNotificationsRegistered', this._resolveUserToken)
+			NotificationsIOS.removeEventListener('remoteNotificationsRegistered', () => this._resolveUserToken())
 		}
 
 		return true
@@ -102,8 +97,8 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 				this._handleNotification(notification, {
 					action: {
 						identifier: 'default.action',
-						isInit: 	true,
-					}
+					},
+					isInit: true,
 				})
 			})
 
@@ -145,8 +140,8 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 			NotificationsAndroid.setNotificationOpenedListener(notification => {
 				this._handleNotification(notification, {
 					action: {
-						identifier: 'default.android.action'
-					}
+						identifier: 'default.android.action',
+					},
 				})
 			})
 		}

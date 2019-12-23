@@ -52,6 +52,12 @@ export default class AbstractFirebaseMessaging
     _iosResolvePermissions = false
 
     /**
+     * @type {function}
+     * @private
+     */
+    _onTokenRefreshCallback = null
+
+    /**
      * Get instance
      *
      * @param {string} env current _environment
@@ -268,6 +274,20 @@ export default class AbstractFirebaseMessaging
     }
 
     /**
+     * Add user token refresh callback
+     *
+     * @param {function(string): void} callback
+     *
+     * @return {function(): null}
+     */
+    onTokenRefresh(callback)
+    {
+        this._onTokenRefreshCallback = callback
+
+        return () => this._onTokenRefreshCallback = null
+    }
+
+    /**
      * Recieve new user token
      *
      * @param {string} token
@@ -277,7 +297,7 @@ export default class AbstractFirebaseMessaging
     * recieveUserToken(token)
     {
         if (this._refreshTokenListner) {
-            return yield this._refreshTokenListner(token)
+            return yield* this._refreshTokenListner(token)
         }
 
         return true

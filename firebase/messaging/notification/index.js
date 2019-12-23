@@ -3,27 +3,27 @@
  */
 export default class PushNotification
 {
-    /**
-     * Notification type
-     *
-     * @type {string}
-     * @private
-     */
-    _type = 'none'
+	/**
+	 * Notification type
+	 *
+	 * @type {string}
+	 * @private
+	 */
+	_type = 'none'
 
-    /**
-     * Notification payload data
-     *
-     * @type {object}
-     * @private
-     */
-    _data = {}
+	/**
+	 * Notification payload data
+	 *
+	 * @type {object}
+	 * @private
+	 */
+	_data = {}
 
-    /**
-     * @type {null}
-     * @private
-     */
-    _openIdentifier = null
+	/**
+	 * @type {null}
+	 * @private
+	 */
+	_openIdentifier = null
 
 	/**
 	 * Remove notification from status bar
@@ -45,72 +45,74 @@ export default class PushNotification
 	 */
 	_isInitNotification = false
 
-    /**
-     * PushNotification constructor
-     *
-     * @param {object} notification
-     * @param {object} params
-     *
-     * @return {undefined}
-     */
-    constructor(notification, params = {})
-    {
-        const { data } = notification.getData && notification.getData() || notification || {}
-        const {
-        	identifier,
-		  	completion,
-		  	isForeground,
-		  	isInit,
-        } 			   = params
+	/**
+	 * PushNotification constructor
+	 *
+	 * @param {object} notification
+	 * @param {object} params
+	 *
+	 * @return {undefined}
+	 */
+	constructor(notification, params = {})
+	{
+		const data = typeof notification.getData === 'function' && notification.getData()
+					 || notification && notification.data || {}
 
-        this._data = data
-        this._type = data && data.type
+		const {
+				  action: { identifier },
+				  completion,
+				  isForeground,
+				  isInit,
+			  } = params
 
-        if (identifier) {
-            this._openIdentifier = identifier
-        }
+		this._data = data
+		this._type = data && data.type
 
-        if (completion) {
-        	this._completionCallback = completion
+		if (identifier) {
+			this._openIdentifier = identifier
 		}
 
-        if (isForeground) {
-        	this._androidIsForeground = isForeground
+		if (completion) {
+			this._completionCallback = completion
 		}
 
-        if (isInit) {
-        	this._isInitNotification = isInit
+		if (isForeground) {
+			this._androidIsForeground = isForeground
 		}
-    }
 
-    /**
-     * Get notification type
-     *
-     * @see NotificationTypes
-     *
-     * @return {string}
-     */
-    getType = () => {
-        return this._type
-    }
+		if (isInit) {
+			this._isInitNotification = isInit
+		}
+	}
 
-    /**
-     * Get notification payload data
-     *
-     * @return {object}
-     */
-    getData = () => {
-        return this._data
-    }
+	/**
+	 * Get notification type
+	 *
+	 * @see NotificationTypes
+	 *
+	 * @return {string}
+	 */
+	getType = () => {
+		return this._type
+	}
 
-    /**
-     * Click on push notification in status bar
-     *
-     * @return {boolean}
-     */
-    isOpened = () => {
-        return this._openIdentifier !== null
-    }
+	/**
+	 * Get notification payload data
+	 *
+	 * @return {object}
+	 */
+	getData = () => {
+		return this._data
+	}
+
+	/**
+	 * Click on push notification in status bar
+	 *
+	 * @return {boolean}
+	 */
+	isOpened = () => {
+		return this._openIdentifier !== null
+	}
 
 	/**
 	 * Click on notification and run app (app not running)
@@ -118,7 +120,7 @@ export default class PushNotification
 	 * @return {boolean}
 	 */
 	isInit = () => {
-    	return this._isInitNotification
+		return this._isInitNotification
 	}
 
 	/**
@@ -127,7 +129,7 @@ export default class PushNotification
 	 * @return {string}
 	 */
 	getOpenIdentifier = () => {
-    	return this._openIdentifier
+		return this._openIdentifier
 	}
 
 	/**
