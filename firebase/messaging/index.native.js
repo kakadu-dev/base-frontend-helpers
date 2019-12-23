@@ -60,8 +60,6 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	 */
 	async _resolveUserToken(token)
 	{
-		console.log('TOKEN asd: ', token)
-
 		this._iosResolvePermissions = true
 
 		const firebaseToken = await this.getUserToken()
