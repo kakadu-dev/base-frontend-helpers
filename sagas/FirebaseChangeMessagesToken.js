@@ -46,9 +46,7 @@ export const FirebaseChangeMessagesToken = function* () {
         const pushToken = yield take(tokenChannel)
 
         if (pushToken) {
-            FirebaseMessaging
-                .getInstance()
-                .recieveUserToken(pushToken)
+            yield FirebaseMessaging.getInstance().recieveUserToken(pushToken)
         }
     }
 }
