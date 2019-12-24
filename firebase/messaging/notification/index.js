@@ -124,6 +124,15 @@ export default class PushNotification
 	}
 
 	/**
+	 * Is android foreground
+	 *
+	 * @return {boolean}
+	 */
+	isAndroidForeground = () => {
+		return this._androidIsForeground
+	}
+
+	/**
 	 * Get open identifier
 	 *
 	 * @return {string}
