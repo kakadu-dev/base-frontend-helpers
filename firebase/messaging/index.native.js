@@ -63,17 +63,12 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	 */
 	getPermissions(categories)
 	{
-		firebase
-			.messaging()
-			.hasPermission()
-			.then(enabled => {
-				if (PLATFORM === 'ios') {
-					NotificationsIOS.addEventListener('remoteNotificationsRegistered', this._resolveUserToken.bind(this))
-					NotificationsIOS.requestPermissions(categories)
-				} else {
-					NotificationsAndroid.setRegistrationTokenUpdateListener(this._resolveUserToken.bind(this))
-				}
-			})
+		if (PLATFORM === 'ios') {
+			NotificationsIOS.addEventListener('remoteNotificationsRegistered', this._resolveUserToken.bind(this))
+			NotificationsIOS.requestPermissions(categories)
+		} else {
+			NotificationsAndroid.setRegistrationTokenUpdateListener(this._resolveUserToken.bind(this))
+		}
 
 		return super.getPermissions()
 	}
