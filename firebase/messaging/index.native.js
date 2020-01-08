@@ -239,4 +239,54 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 
 		return this
 	}
+
+	/**
+	 * Set IOS badge
+	 *
+	 * @param {int|function(int)} expression
+	 *
+	 * @return {FirebaseMessaging}
+	 */
+	setBadgeIOS(expression)
+	{
+		if (PLATFORM === 'ios') {
+			NotificationsIOS.getBadgesCount(expression);
+		}
+
+		return this
+	}
+
+	/**
+	 * Remove (cancel) push notification
+	 *
+	 * @param {number} id
+	 *
+	 * @return {FirebaseMessaging}
+	 */
+	removePushNotification(id)
+	{
+		if (PLATFORM === 'ios') {
+			NotificationsIOS.removeDeliveredNotifications([id])
+		} else {
+			NotificationsAndroid.cancelLocalNotification(id)
+		}
+
+		return this
+	}
+
+	/**
+	 * Remove (cancel) all push notifications
+	 *
+	 * @return {FirebaseMessaging}
+	 */
+	removeAllPushNotifications()
+	{
+		if (PLATFORM === 'ios') {
+			NotificationsIOS.removeAllDeliveredNotifications()
+		} else {
+			NotificationsAndroid.removeAllDeliveredNotifications()
+		}
+
+		return this
+	}
 }
