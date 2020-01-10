@@ -243,14 +243,14 @@ export class FirebaseMessaging extends AbstractFirebaseMessaging
 	/**
 	 * Set IOS badge
 	 *
-	 * @param {int|function(int)} expression
+	 * @param {int} expression
 	 *
 	 * @return {FirebaseMessaging}
 	 */
-	setBadgeIOS(expression)
+	setBadgeIOS(count)
 	{
 		if (PLATFORM === 'ios') {
-			NotificationsIOS.getBadgesCount(expression);
+			NotificationsIOS.setBadgesCount(count)
 		}
 
 		return this
