@@ -168,7 +168,7 @@ export function* callApi(endpoint, options, config = {})
 
         // Custom handle request error
         if (handleError) {
-            const handleErrorResult = yield handleError(resultError, dataProvider, resultEndpoint)
+            const handleErrorResult = yield handleError(statusCode, resultError, dataProvider, resultEndpoint)
 
             if (handleErrorResult) {
                 return handleErrorResult
