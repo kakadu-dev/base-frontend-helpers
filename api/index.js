@@ -108,7 +108,7 @@ async function callApiEndpoint(endpoint, options, customParams = {}, config = {}
     }
 
     if (successCallback) {
-        yield successCallback(result, customParams)
+        successCallback(result, customParams)
     }
 
     return result

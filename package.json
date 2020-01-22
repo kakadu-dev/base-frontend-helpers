@@ -1,6 +1,6 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "dependencies": {
         "lodash": "^4.17.11"
     },
