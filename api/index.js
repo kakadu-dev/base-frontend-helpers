@@ -108,7 +108,7 @@ async function callApiEndpoint(endpoint, options, customParams = {}, config = {}
     }
 
     if (successCallback) {
-        successCallback(result, customParams)
+        yield successCallback(result, customParams)
     }
 
     return result
@@ -149,7 +149,7 @@ export function* callApi(endpoint, options, config = {})
     const resultEndpoint = endpoint.replace(/\/$/, '') + dataProvider.buildUrlParams()
 
     if (beforeRequest) {
-        beforeRequest(dataProvider)
+        yield beforeRequest(dataProvider)
     }
 
     const customParams = dataProvider.getCustomParams()
@@ -168,7 +168,7 @@ export function* callApi(endpoint, options, config = {})
 
         // Custom handle request error
         if (handleError) {
-            const handleErrorResult = handleError(resultError, dataProvider, resultEndpoint)
+            const handleErrorResult = yield handleError(resultError, dataProvider, resultEndpoint)
 
             if (handleErrorResult) {
                 return handleErrorResult
