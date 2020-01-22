@@ -136,8 +136,8 @@ export function* callApi(endpoint, options, config = {})
     if (initRequest) {
         const initResult = yield initRequest()
 
-        if (initRequest) {
-            return initRequest
+        if (initResult) {
+            return initResult
         }
     }
 
