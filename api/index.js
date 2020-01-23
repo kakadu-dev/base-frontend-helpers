@@ -13,7 +13,7 @@ import SearchQuery from '../helpers/DataProvider/SearchQuery'
  *
  * @return {Promise<{response: {response: Response, json: any}} | {error: (*|string)}>}
  */
-async function callApiEndpoint(endpoint, options, customParams = {}, config = {})
+export async function callApiEndpoint(endpoint, options, customParams = {}, config = {})
 {
     const {
               domain,
