@@ -7,17 +7,24 @@ export class GeneratorHelper
 	 * Execute call api generator
 	 *
 	 * @param {function} callback
+	 * @param {*} val
 	 *
 	 * @return {*}
 	 */
-	static executeCallApi(generator, value)
+	static executeCallApi(generator, val)
 	{
-		let genVal = generator.next(value)
+		const {done, value} = generator.next(val)
 
-		if (genVal.done) {
-			return genVal.value
+		if (done) {
+			return value
 		}
 
-		return GeneratorHelper.executeCallApi(generator, genVal.value)
+		let newValue = value
+
+		if (value && value.next) {
+			newValue = GeneratorHelper.executeCallApi(value)
+		}
+
+		return GeneratorHelper.executeCallApi(generator, newValue)
 	}
 }
