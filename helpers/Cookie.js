@@ -1,4 +1,4 @@
-/* eslint-disable */
+const doc = typeof (document) !== 'undefined' ? document : {cookie: ''}
 
 /**
  * Get cookie subdomains pattern
@@ -32,11 +32,13 @@ const getCookieDomain = (host) => {
  * @return {boolean}
  */
 export const isCookieEnabled = () => {
-	if (navigator.cookieEnabled) return true
+	const nav = global && global.navigator || {}
 
-	document.cookie = 'cookiemptest=1'
-	const isEnabled = document.cookie.indexOf('cookiemptest=') !== -1
-	document.cookie = 'cookiemptest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT'
+	if (nav.cookieEnabled) return true
+
+	doc.cookie      = 'cookiemptest=1'
+	const isEnabled = doc.cookie.indexOf('cookiemptest=') !== -1
+	doc.cookie      = 'cookiemptest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT'
 
 	return isEnabled
 }
@@ -48,7 +50,7 @@ export const cookieEnableState = isCookieEnabled()
 
 export function getCookie(name)
 {
-	const matches = document.cookie.match(new RegExp(
+	const matches = doc.cookie.match(new RegExp(
 		`(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`,
 	))
 	return matches ? decodeURIComponent(matches[1]) : undefined
@@ -56,8 +58,8 @@ export function getCookie(name)
 
 export function setCookie(name, value, allSubdomain = false, options)
 {
-	options         = options || {}
-	let { expires } = options
+	options       = options || {}
+	let {expires} = options
 
 	// Set default expires
 	if (!expires) {
@@ -94,7 +96,7 @@ export function setCookie(name, value, allSubdomain = false, options)
 		}
 	}
 
-	document.cookie = updatedCookie
+	doc.cookie = updatedCookie
 
 	return true
 }
