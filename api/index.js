@@ -7,24 +7,30 @@ import SearchQuery from '../helpers/DataProvider/SearchQuery'
  * Build full url with query string
  *
  * @param {string} endpoint
- * @param {DataProvider} dataProvider
+ * @param {SearchQuery} dataProvider
  *
  * @return {string}
  */
 export function getFullUrl(endpoint, dataProvider)
 {
 	// Remove end slash if exist and add get params
-	const resultEndpoint = new URL(endpoint.replace(/\/$/, ''))
-	resultEndpoint.search = new URLSearchParams(dataProvider.buildUrlParams())
+	const resultEndpoint = endpoint.replace(/\/$/, '')
+	const queryParams    = Object.entries(dataProvider.buildUrlParams()).map(([key, value]) => {
+		return `${key}=${encodeURIComponent(value)}`
+	}).join('&')
 
-	return resultEndpoint.toString()
+	return resultEndpoint + (
+		queryParams.length > 0
+			? `?${queryParams}`
+			: ''
+	)
 }
 
 /**
  * Get full request
  *
  * @param {string} endpoint
- * @param {DataProvider} dataProvider
+ * @param {SearchQuery} dataProvider
  * @param {object} config
  *
  * @return {Promise<{response: {response: Response, json: any}} | {error: (*|string)}>}

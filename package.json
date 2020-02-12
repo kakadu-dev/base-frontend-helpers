@@ -1,9 +1,8 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "1.10.0",
+    "version": "1.10.1",
     "dependencies": {
-        "lodash": "^4.17.11",
-        "react-native-url-polyfill": "^1.1.1"
+        "lodash": "^4.17.11"
     },
     "description": "Base frontend helpers for reactjs and react native",
     "repository": {
