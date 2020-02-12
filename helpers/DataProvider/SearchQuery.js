@@ -267,7 +267,7 @@ export default class SearchQuery
 	 */
 	getCustomParams()
 	{
-		return this.customParams
+		return this.customParams || {}
 	}
 
 	/**
@@ -320,7 +320,7 @@ export default class SearchQuery
 	 */
 	buildUrlParams()
 	{
-		const urlParams = []
+		const urlParams = {}
 
 		const {
 				  filter,
@@ -331,46 +331,41 @@ export default class SearchQuery
 			  } = this.toFilter()
 
 		if (filter) {
-			urlParams.push(`filter=${JSON.stringify(filter)}`)
+			urlParams.filter = JSON.stringify(filter)
 		}
 
 		if (extraFilter) {
-			urlParams.push(`extraFilter=${JSON.stringify(extraFilter)}`)
+			urlParams.extraFilter = JSON.stringify(extraFilter)
 		}
 
 		if (expands) {
-			urlParams.push(`expand=${expands}`)
+			urlParams.expand = expands
 		}
 
 		if (orderBy) {
-			urlParams.push(`sort=${orderBy}`)
+			urlParams.sort = orderBy
 		}
 
 		if (pagination) {
 			if (pagination.page) {
-				urlParams.push(`page=${pagination.page}`)
+				urlParams.page = pagination.page
 			}
 
 			if (pagination.perPage) {
-				urlParams.push(`per-page=${pagination.perPage}`)
+				urlParams['per-page'] = pagination.perPage
 			}
 		}
 
 		// Add query params
 		Object.entries(this.queryParams).map(([param, value]) => {
 			if (value !== null || value !== undefined) {
-				urlParams.push(`${param}=${value}`)
+				urlParams[param] = value
 			}
 
 			return null
 		})
 
-		// Join params
-		if (urlParams.length) {
-			return `?${urlParams.join('&')}`
-		}
-
-		return ''
+		return urlParams
 	}
 
 	/**

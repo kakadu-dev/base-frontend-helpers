@@ -4,16 +4,32 @@ import DataProvider from '../helpers/DataProvider'
 import SearchQuery from '../helpers/DataProvider/SearchQuery'
 
 /**
+ * Build full url with query string
+ *
+ * @param {string} endpoint
+ * @param {DataProvider} dataProvider
+ *
+ * @return {string}
+ */
+export function getFullUrl(endpoint, dataProvider)
+{
+	// Remove end slash if exist and add get params
+	const resultEndpoint = new URL(endpoint.replace(/\/$/, ''))
+	resultEndpoint.search = new URLSearchParams(dataProvider.buildUrlParams())
+
+	return resultEndpoint.toString()
+}
+
+/**
  * Get full request
  *
  * @param {string} endpoint
- * @param {object} options
- * @param {object} customParams
+ * @param {DataProvider} dataProvider
  * @param {object} config
  *
  * @return {Promise<{response: {response: Response, json: any}} | {error: (*|string)}>}
  */
-export async function callApiEndpoint(endpoint, options, customParams = {}, config = {})
+export async function callApiEndpoint(endpoint, dataProvider, config = {})
 {
 	const {
 			  domain,
@@ -25,12 +41,13 @@ export async function callApiEndpoint(endpoint, options, customParams = {}, conf
 			  returnRequest,
 			  cacheResponse,
 			  saveAuth,
-		  } = customParams
+		  } = dataProvider.getCustomParams()
 
 	// Complete url address
-	const fullUrl = (endpoint.indexOf('http') === -1)
+	const url     = (endpoint.indexOf('http') === -1)
 		? (domain + endpoint)
 		: endpoint
+	const fullUrl = getFullUrl(url, dataProvider)
 
 	// Default request headers
 	const defaultOptions = {
@@ -43,7 +60,7 @@ export async function callApiEndpoint(endpoint, options, customParams = {}, conf
 	}
 
 	// Merge default headers with custom headers
-	const requestOptions = _.merge(defaultOptions, options)
+	const requestOptions = _.merge(defaultOptions, dataProvider.getRequestOptions())
 
 	if (requestOptions.body) {
 		if (['get', 'head'].includes(requestOptions.method.toLowerCase())) {
@@ -108,7 +125,7 @@ export async function callApiEndpoint(endpoint, options, customParams = {}, conf
 	}
 
 	if (successCallback) {
-		successCallback(result, customParams)
+		successCallback(result, dataProvider.getCustomParams())
 	}
 
 	return result
@@ -145,18 +162,14 @@ export function* callApi(endpoint, options, config = {})
 		? options
 		: DataProvider.buildQuery().addRequestOptions(options)
 
-	// Remove end slash if exist and add get params
-	const resultEndpoint = endpoint.replace(/\/$/, '') + dataProvider.buildUrlParams()
-
 	if (beforeRequest) {
 		yield beforeRequest(dataProvider)
 	}
 
-	const customParams = dataProvider.getCustomParams()
-	const result       = yield callApiEndpoint(resultEndpoint, dataProvider.getRequestOptions(), customParams, requestConfig)
+	const result = yield callApiEndpoint(endpoint, dataProvider, requestConfig)
 
 	// Return only request options, skip fetch
-	if (customParams.returnRequest) {
+	if (dataProvider.getCustomParams().returnRequest) {
 		return result
 	}
 
@@ -168,7 +181,7 @@ export function* callApi(endpoint, options, config = {})
 
 		// Custom handle request error
 		if (handleError) {
-			const handleErrorResult = yield handleError(statusCode, resultError, dataProvider, resultEndpoint)
+			const handleErrorResult = yield handleError(statusCode, resultError, dataProvider, endpoint, options)
 
 			if (handleErrorResult) {
 				return handleErrorResult
