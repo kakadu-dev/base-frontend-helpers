@@ -103,31 +103,33 @@ function* defaultActionList(action, api, beforeResponse, afterResponse, response
  * @return {undefined}
  */
 const mergeModels = (modelsState, model) => {
-	if (!modelsState || !modelsState.result) {
+	if (!modelsState || !modelsState.result || !model) {
 		return
 	}
 
 	const models     = modelsState.result
 	let productExist = false
 
-	for (let i = 0; i < models.list.length; i++) {
-		if (models.list[i].id === model.result.id) {
-			models.list[i] = model.result
+	if (model.result) {
+		for (let i = 0; i < models.list.length; i++) {
+			if (models.list[i].id === model.result.id) {
+				models.list[i] = model.result
 
-			productExist = true
-			break
+				productExist = true
+				break
+			}
 		}
-	}
 
-	if (!productExist) {
-		models.list.push(model.result)
+		if (!productExist) {
+			models.list.push(model.result)
 
-		models.pagination.totalItems++
+			models.pagination.totalItems++
+		}
 	}
 
 	if (
 		modelsState && modelsState.response &&
-		model && model.response && model.response.headers
+		model.response && model.response.headers
 	) {
 		modelsState.response.headers = model.response.headers
 	}
@@ -153,10 +155,12 @@ export default class SagasHelper
 		if (!body.customerId) {
 			const currentUser = yield select(userSelector)
 
-			// Add user id
-			body.customerId = currentUser.result.id
+			if (currentUser && currentUser.result && currentUser.result.id) {
+				// Add user id
+				body.customerId = currentUser.result.id
 
-			searchQuery.addBody(body, true)
+				searchQuery.addBody(body, true)
+			}
 		}
 	}
 
