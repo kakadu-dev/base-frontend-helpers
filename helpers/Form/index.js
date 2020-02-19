@@ -66,6 +66,9 @@ export class FormComponent extends Component
 		this.nativeInputs = {}
 		this.imagesInputs = {}
 
+		this.dynamicExcludeFields = []
+		this.dynamicHiddenFields  = []
+
 		this.state = {
 			values:     defaultValues,
 			labels:     {},
@@ -231,44 +234,45 @@ export class FormComponent extends Component
 	 * @return {Form.state.values|{}}
 	 */
 	getValues = (removeImages = false) => {
-		const { values }                 = this.state
-		const { renderOnly, fieldsKeep } = this.props
+		const { values } = this.state
+		const {
+				  renderOnly,
+				  fieldsKeep,
+				  isStringifyValues,
+			  }          = this.props
 
-		if (removeImages && values) {
-			Object.keys(this.imagesInputs).map(name => {
-				if (values[name]) {
-					delete values[name]
-				}
-
-				return null
-			})
-		}
-
-		// Normalize dot notation fields
-		for (let key in values) {
-			if (key.indexOf('.') !== -1) {
-				const val = values[key]
-
-				delete values[key]
-
-				_.set(values, key, val)
-			}
-		}
-
-		// Normalize array values
-		for (let field in values) {
-			const val = values[field]
-
-			if (typeof val === 'object') {
-				values[field] = JSON.stringify(val)
-			}
-		}
+		const formValues  = {}
+		let handledValues = _.omit(values, this.dynamicExcludeFields)
 
 		if (renderOnly) {
-			return _.pick(values, [...renderOnly, ...fieldsKeep])
+			handledValues = _.pick(handledValues, [...renderOnly, ...fieldsKeep])
 		}
 
-		return values
+		Object.entries(handledValues).forEach(([field, value]) => {
+			// Remove specified image inputs
+			if (removeImages) {
+				if (this.imagesInputs[field]) {
+					return
+				}
+			}
+
+			// Normalize dot notation fields
+			if (field.indexOf('.') !== -1) {
+				_.set(formValues, field, value)
+				return
+			}
+
+			formValues[field] = value
+		})
+
+		// Normalize array values
+		Object.entries(formValues).forEach(([field, value]) => {
+			if (isStringifyValues && typeof value === 'object') {
+				formValues[field] = JSON.stringify(value)
+			}
+		})
+
+		return formValues
 	}
 
 	/**
@@ -300,14 +304,19 @@ export class FormComponent extends Component
 	 *
 	 * @return {boolean}
 	 */
-	isExclude = (element) => {
+	isExclude = element => {
 		const { renderOnly } = this.props
+		const { name }       = element
+
+		if (this.dynamicHiddenFields.includes(name)) {
+			return true
+		}
 
 		if (!renderOnly) {
 			return false
 		}
 
-		return !renderOnly.includes(element.name)
+		return !renderOnly.includes(name)
 	}
 
 	/**
@@ -332,7 +341,7 @@ export class FormComponent extends Component
 	 *
 	 * @return {object}
 	 */
-	getInputProps = (element) => {
+	getInputProps = element => {
 		const { values, labels } = this.state
 		const { inputProps }     = this.props
 		const { name }           = element
@@ -424,6 +433,29 @@ export class FormComponent extends Component
 					errorNativeInput.focus()
 				}
 			})
+		}
+	}
+
+	/**
+	 * Handle element logick props
+	 *
+	 * @param {Object} element
+	 *
+	 * @return {undefined}
+	 */
+	handleLogicProps = element => {
+		const {
+				  name,
+				  isHidden,
+				  fieldKeep,
+			  } = element
+
+		if (fieldKeep === false) {
+			this.dynamicExcludeFields.push(name)
+		}
+
+		if (isHidden === true) {
+			this.dynamicHiddenFields.push(name)
 		}
 	}
 
@@ -741,6 +773,8 @@ export class FormComponent extends Component
 		const instance = this.getFormInstance()
 
 		return instance.map((element, index) => {
+			this.handleLogicProps(element)
+
 			if (this.isExclude(element)) {
 				return false
 			}
@@ -788,28 +822,30 @@ FormComponent.propTypes = {
 	/**
 	 * @type BaseForm
 	 */
-	form:           PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
-	requestState:   PropTypes.object,
-	values:         PropTypes.object,
-	customInputs:   PropTypes.object,
-	scrollView:     PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-	requiredSymbol: PropTypes.string,
-	renderOnly:     PropTypes.array,
-	fieldsKeep:     PropTypes.array,
-	onChangeValue:  PropTypes.func,
-	inputProps:     PropTypes.func,
-	helperProps:    PropTypes.func,
+	form:              PropTypes.oneOfType([PropTypes.object, PropTypes.func]).isRequired,
+	requestState:      PropTypes.object,
+	values:            PropTypes.object,
+	customInputs:      PropTypes.object,
+	scrollView:        PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+	requiredSymbol:    PropTypes.string,
+	renderOnly:        PropTypes.array,
+	fieldsKeep:        PropTypes.array,
+	onChangeValue:     PropTypes.func,
+	inputProps:        PropTypes.func,
+	helperProps:       PropTypes.func,
+	isStringifyValues: PropTypes.bool,
 }
 
 FormComponent.defaultProps = {
-	requestState:   {},
-	values:         {},
-	customInputs:   {},
-	requiredSymbol: '*',
-	renderOnly:     null,
-	fieldsKeep:     [],
-	scrollView:     null,
-	onChangeValue:  null,
-	inputProps:     (element, props) => props,
-	helperProps:    (element, props) => props,
+	requestState:      {},
+	values:            {},
+	customInputs:      {},
+	requiredSymbol:    '*',
+	renderOnly:        null,
+	fieldsKeep:        [],
+	scrollView:        null,
+	onChangeValue:     null,
+	isStringifyValues: true,
+	inputProps:        (element, props) => props,
+	helperProps:       (element, props) => props,
 }

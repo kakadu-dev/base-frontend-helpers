@@ -25,7 +25,8 @@ let orientationIsLandscape = screenWidth > screenHeight
 
 /**
  * Converts provided width percentage to independent pixel (dp).
- * @param  {string} widthPercent The percentage of screen's width that UI element should cover
+ *
+ * @param  {number} widthPercent The percentage of screen's width that UI element should cover
  *                               along with the percentage symbol (%).
  * @return {number}              The calculated dp depending on current device's screen width.
  */
@@ -40,7 +41,8 @@ const widthPercentageToDP = widthPercent => {
 
 /**
  * Converts provided height percentage to independent pixel (dp).
- * @param  {string} heightPercent The percentage of screen's height that UI element should cover
+ *
+ * @param  {number} heightPercent The percentage of screen's height that UI element should cover
  *                                along with the percentage symbol (%).
  * @return {number}               The calculated dp depending on current device's screen height.
  */
@@ -55,6 +57,10 @@ const heightPercentageToDP = heightPercent => {
 
 /*
  * Font size
+ *
+ * @param {number fontPercent
+ *
+ * @return {number}
  */
 const fontSizePercentageToDP = fontPercent => {
 	const elemWidth = parseFloat(fontPercent)
@@ -68,8 +74,12 @@ const fontSizePercentageToDP = fontPercent => {
  * called. State changing occurs for a new state variable with the name 'orientation' that will
  * always hold the current value of the orientation after the 1st orientation change.
  * Invoke it inside the screen's constructor or in componentDidMount lifecycle method.
+ *
  * @param {object} that Screen's class component this variable. The function needs it to
  *                      invoke setState method and trigger screen rerender (this.setState()).
+ * @param {function} callback
+ *
+ * @return {undefined}
  */
 const listenOrientationChange = (that, callback) => {
 	Dimensions.addEventListener('change', newDimensions => {
@@ -95,6 +105,8 @@ const listenOrientationChange = (that, callback) => {
  * componentWillUnmount lifecycle method of every class component (UI screen) that
  * listenOrientationChange function has been invoked. This should be done in order to
  * avoid adding new listeners every time the same component is re-mounted.
+ *
+ * @return {undefined}
  */
 const removeOrientationListener = () => {
 	Dimensions.removeEventListener('change', () => null)

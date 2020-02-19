@@ -15,38 +15,39 @@ import { BaseHelper } from './BaseHelper'
  * @returns {null}
  * @constructor
  */
-const ResizeListener = ({onChange}) => {
-    const [size, setSize] = useState({
-        width:  0,
-        height: 0,
-    })
+const ResizeListener = ({ onChange }) => {
+	const [size, setSize] = useState({
+		width:  0,
+		height: 0,
+	})
 
-    useLayoutEffect(() => {
-        function updateSize() {
-            setSize({
-                width:  BaseHelper.isMobileDevice() ? screen.width : window.innerWidth,
-                height: BaseHelper.isMobileDevice() ? screen.height : window.innerHeight,
-            })
-        }
+	useLayoutEffect(() => {
+		function updateSize()
+		{
+			setSize({
+				width:  BaseHelper.isMobileDevice() ? screen.width : window.innerWidth,
+				height: BaseHelper.isMobileDevice() ? screen.height : window.innerHeight,
+			})
+		}
 
-        window.addEventListener('resize', updateSize)
-        updateSize()
-        return () => window.removeEventListener('resize', updateSize)
-    }, [])
+		window.addEventListener('resize', updateSize)
+		updateSize()
+		return () => window.removeEventListener('resize', updateSize)
+	}, [])
 
-    useEffect(() => {
-        onChange(size)
-    }, [size])
+	useEffect(() => {
+		onChange(size)
+	}, [size])
 
-    return null
+	return null
 }
 
 ResizeListener.propTypes = {
-    onChange: PropTypes.func,
+	onChange: PropTypes.func,
 }
 
 ResizeListener.defaultProps = {
-    onChange: () => null,
+	onChange: () => null,
 }
 
 export { ResizeListener }

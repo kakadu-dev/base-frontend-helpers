@@ -87,6 +87,8 @@ export default class BaseForm
 	 * 		name: 'test',
 	 * 		type: 'input',
 	 * 		required: false,
+	 * 		isHidden: false,
+	 * 		fieldKeep: true,
 	 * 		props: {
 	 * 	        common: {},
 	 * 		 	native: {},
