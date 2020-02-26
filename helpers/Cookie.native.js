@@ -11,6 +11,10 @@ export async function getCookie(name)
 
 export async function setCookie(name, value, allSubdomain = false, options)
 {
+	if (value === null || value === undefined) {
+		return await deleteCookie(name)
+	}
+
 	try {
 		return await storage.setItem(`@${name}`, value)
 	} catch (e) {

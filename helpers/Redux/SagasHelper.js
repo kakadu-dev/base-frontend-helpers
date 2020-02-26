@@ -107,7 +107,7 @@ const mergeModels = (modelsState, model) => {
 		return
 	}
 
-	const models     = modelsState.result
+	const models     = { ...DataProvider.getDefaultState(), ...modelsState.result }
 	let productExist = false
 
 	if (model.result) {

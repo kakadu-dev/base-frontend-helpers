@@ -199,11 +199,11 @@ export default class RequestActionHelper
 					delete result.response
 				}
 
-				let finalResult = result
+				let finalResult = result || {}
 
 				// Keep prev state
 				if (RequestActionHelper.keepPrevResult(searchQuery, true)) {
-					finalResult = state[actionType].result
+					finalResult = state[actionType].result || {}
 
 					// Update pagination
 					if (result && result.pagination) {

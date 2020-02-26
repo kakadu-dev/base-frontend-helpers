@@ -131,7 +131,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 	}
 
 	if (successCallback) {
-		successCallback(result, dataProvider.getCustomParams())
+		await successCallback(result, dataProvider.getCustomParams())
 	}
 
 	return result
