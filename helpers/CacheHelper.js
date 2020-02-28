@@ -1,4 +1,3 @@
-import storage from '../storage/AsyncStorage'
 import { BaseHelper } from './BaseHelper'
 
 /**
@@ -6,6 +5,38 @@ import { BaseHelper } from './BaseHelper'
  */
 export class CacheHelper
 {
+    /**
+     * @type {createWebStorage}
+     * @private
+     */
+    static storage = null
+
+    /**
+     * Set helper storage
+     *
+     * @param {Object} storage
+     *
+     * @return {undefined}
+     */
+    static setStorage(storage)
+    {
+        CacheHelper.storage = storage
+    }
+
+    /**
+     * Get storage
+     *
+     * @return {createWebStorage}
+     */
+    static getStorage()
+    {
+        if (CacheHelper.storage === null) {
+            CacheHelper.storage = require('redux-persist/lib/storage')
+        }
+
+        return CacheHelper.storage
+    }
+
     /**
      * Get cache full key
      *
@@ -34,15 +65,15 @@ export class CacheHelper
         const fullKey = CacheHelper.getFullCacheKey(key, uniqueKey)
 
         try {
-            const cacheStore = JSON.parse(await storage.getItem(uniqueKey) || '{}')
+            const cacheStore = JSON.parse(await CacheHelper.getStorage().getItem(uniqueKey) || '{}')
 
             if (cacheStore[fullKey]) {
                 delete cacheStore[fullKey]
 
-                storage.setItem(uniqueKey, JSON.stringify(cacheStore))
+                CacheHelper.getStorage().setItem(uniqueKey, JSON.stringify(cacheStore))
             }
 
-            return storage.removeItem(fullKey)
+            return CacheHelper.getStorage().removeItem(fullKey)
         } catch (e) {
             return null
         }
@@ -61,7 +92,7 @@ export class CacheHelper
         const fullKey = CacheHelper.getFullCacheKey(key, uniqueKey)
 
         try {
-            const cachedResponse = await storage.getItem(fullKey)
+            const cachedResponse = await CacheHelper.getStorage().getItem(fullKey)
 
             if (!cachedResponse) {
                 return null
@@ -99,14 +130,14 @@ export class CacheHelper
         const fullKey = CacheHelper.getFullCacheKey(key, uniqueKey)
 
         try {
-            const cacheStore = JSON.parse(await storage.getItem(uniqueKey) || '{}')
+            const cacheStore = JSON.parse(await CacheHelper.getStorage().getItem(uniqueKey) || '{}')
             const time       = Date.now()
 
             cacheStore[fullKey] = {expiration, time}
 
-            storage.setItem(uniqueKey, JSON.stringify(cacheStore))
+            CacheHelper.getStorage().setItem(uniqueKey, JSON.stringify(cacheStore))
 
-            return storage.setItem(fullKey, JSON.stringify({
+            return CacheHelper.getStorage().setItem(fullKey, JSON.stringify({
                 payload: value,
                 time,
                 expiration,
@@ -126,7 +157,7 @@ export class CacheHelper
     static async clearCache(uniqueKey = 'cache')
     {
         try {
-            const cacheStore = JSON.parse(await storage.getItem(uniqueKey) || '{}')
+            const cacheStore = JSON.parse(await CacheHelper.getStorage().getItem(uniqueKey) || '{}')
 
             const keys = []
 
@@ -136,7 +167,7 @@ export class CacheHelper
                 keys.push(...Object.keys(cacheStore))
             }
 
-            return storage.multiRemove(keys)
+            return CacheHelper.getStorage().multiRemove(keys)
         } catch (e) {
             return null
         }
@@ -152,7 +183,7 @@ export class CacheHelper
     static async clearOldCache(uniqueKey = 'cache')
     {
         try {
-            const cacheStore = JSON.parse(await storage.getItem(uniqueKey) || '{}')
+            const cacheStore = JSON.parse(await CacheHelper.getStorage().getItem(uniqueKey) || '{}')
 
             if (!cacheStore) {
                 return null
@@ -172,9 +203,9 @@ export class CacheHelper
             })
 
             if (keys.length > 0) {
-                storage.multiRemove(keys)
+                CacheHelper.getStorage().multiRemove(keys)
 
-                return storage.setItem(uniqueKey, JSON.stringify(cacheStore))
+                return CacheHelper.getStorage().setItem(uniqueKey, JSON.stringify(cacheStore))
             }
         } catch (e) {
         }
