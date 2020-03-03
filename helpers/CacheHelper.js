@@ -31,7 +31,7 @@ export class CacheHelper
     static getStorage()
     {
         if (CacheHelper.storage === null) {
-            CacheHelper.storage = require('redux-persist/lib/storage')
+            CacheHelper.storage = require('../storage/AsyncStorage').default
         }
 
         return CacheHelper.storage
