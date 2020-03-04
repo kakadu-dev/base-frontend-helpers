@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import DataProvider from '../helpers/DataProvider'
 import StatePaginationService from './StatePaginationService'
 import StateResponseService from './StateResponseService'
 import StateSettingsService from './StateSettingsService'
@@ -52,10 +53,15 @@ export default class StateService
 	 * Create state service instance
 	 *
 	 * @param {object} state
+	 * @param {boolean} handleResponseList
 	 *
 	 * @return {StateService}
 	 */
-	static create = (state) => {
+	static create = (state, handleResponseList = false) => {
+		if (handleResponseList) {
+			return new this(DataProvider.handleResponseList(state))
+		}
+
 		return new this(state)
 	}
 
