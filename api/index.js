@@ -93,12 +93,13 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 		}
 	}
 
-	// Request
-	const response = await fetch(fullUrl, requestOptions)
-
-	let body = null
+	let body     = null
+	let response = { ok: false }
 
 	try {
+		// Request
+		response = await fetch(fullUrl, requestOptions)
+
 		const isJson = (response && response.headers && response.headers.get('content-type') || '')
 			.includes('json')
 

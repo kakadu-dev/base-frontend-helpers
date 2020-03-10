@@ -1,11 +1,16 @@
-/* eslint-disable no-restricted-globals */
 import * as PropTypes from 'prop-types'
 import {
 	useEffect,
 	useLayoutEffect,
 	useState,
+	useCallback,
 } from 'react'
 import { BaseHelper } from './BaseHelper'
+
+const getScreenSize = () => ({
+	width:  BaseHelper.isMobileDevice() ? screen.width : window.innerWidth,
+	height: BaseHelper.isMobileDevice() ? screen.height : window.innerHeight,
+})
 
 /**
  * Resize window listener
@@ -16,28 +21,20 @@ import { BaseHelper } from './BaseHelper'
  * @constructor
  */
 const ResizeListener = ({ onChange }) => {
-	const [size, setSize] = useState({
-		width:  0,
-		height: 0,
-	})
+	const [size, setSize] = useState(getScreenSize())
+
+	const updateSize = useCallback(() => setSize(getScreenSize()), [])
 
 	useLayoutEffect(() => {
-		function updateSize()
-		{
-			setSize({
-				width:  BaseHelper.isMobileDevice() ? screen.width : window.innerWidth,
-				height: BaseHelper.isMobileDevice() ? screen.height : window.innerHeight,
-			})
-		}
-
 		window.addEventListener('resize', updateSize)
 		updateSize()
+
 		return () => window.removeEventListener('resize', updateSize)
 	}, [])
 
 	useEffect(() => {
 		onChange(size)
-	}, [size])
+	}, [size.width, size.height])
 
 	return null
 }

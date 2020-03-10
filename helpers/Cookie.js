@@ -1,4 +1,6 @@
-const doc = typeof (document) !== 'undefined' ? document : {cookie: ''}
+import FetchService from '../services/FetchService'
+
+const doc = typeof (document) !== 'undefined' ? document : null
 
 /**
  * Get cookie subdomains pattern
@@ -7,7 +9,7 @@ const doc = typeof (document) !== 'undefined' ? document : {cookie: ''}
  *
  * @return {*}
  */
-const getCookieDomain = (host) => {
+const getCookieDomain = host => {
 	const clearHost = (host || '').replace(/:[0-9]*/, '')
 	const isIp      = !clearHost.match(/[^0-9.:]/)
 
@@ -26,30 +28,15 @@ const getCookieDomain = (host) => {
 	return domains.join('.')
 }
 
-/**
- * Is cookie enabled
- *
- * @return {boolean}
- */
-export const isCookieEnabled = () => {
-	const nav = global && global.navigator || {}
-
-	if (nav.cookieEnabled) return true
-
-	doc.cookie      = 'cookiemptest=1'
-	const isEnabled = doc.cookie.indexOf('cookiemptest=') !== -1
-	doc.cookie      = 'cookiemptest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT'
-
-	return isEnabled
-}
-
-/**
- * @type {boolean}
- */
-export const cookieEnableState = isCookieEnabled()
-
 export function getCookie(name)
 {
+	if (!doc) {
+		return FetchService
+			.getInstance()
+			.getClientCookiesHandler()
+			.get(name)
+	}
+
 	const matches = doc.cookie.match(new RegExp(
 		`(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`,
 	))
@@ -58,8 +45,8 @@ export function getCookie(name)
 
 export function setCookie(name, value, allSubdomain = false, options)
 {
-	options       = options || {}
-	let {expires} = options
+	options         = options || {}
+	let { expires } = options
 
 	// Set default expires
 	if (!expires) {
@@ -76,7 +63,7 @@ export function setCookie(name, value, allSubdomain = false, options)
 		d.setTime(d.getTime() + expires * 1000)
 		expires = options.expires = d
 	}
-	if (expires && expires.toUTCString) {
+	if (expires && expires.toUTCString && doc) {
 		options.expires = expires.toUTCString()
 	}
 
@@ -85,7 +72,21 @@ export function setCookie(name, value, allSubdomain = false, options)
 	let updatedCookie = `${name}=${value}`
 
 	if (allSubdomain) {
-		options.domain = getCookieDomain(location.host)
+		const host = doc
+			? location.host
+			: FetchService
+				.getInstance()
+				.getClientHeaders()
+				.Host
+
+		options.domain = getCookieDomain(host)
+	}
+
+	if (!doc) {
+		return FetchService
+			.getInstance()
+			.getClientCookiesHandler()
+			.set(name, value, options)
 	}
 
 	for (const propName in options) {
@@ -103,6 +104,13 @@ export function setCookie(name, value, allSubdomain = false, options)
 
 export function deleteCookie(name)
 {
+	if (!doc) {
+		FetchService
+			.getInstance()
+			.getClientCookiesHandler()
+			.remove(name)
+	}
+
 	return setCookie(name, undefined, true, {
 		expires: -1,
 	})
