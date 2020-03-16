@@ -12,13 +12,18 @@ class SSRComponentHelper
 	 *
 	 * @param {function(Object, Object)} callback
 	 * @param {Object} mapDispatchToProps
+	 * @param {boolean} disable
 	 *
-	 * @return {Promise.<function>}
+	 * @return {Promise.<function>|null}
 	 */
-	static initialProps(callback, mapDispatchToProps)
+	static initialProps(callback, mapDispatchToProps, disable = false)
 	{
 		return async (ctx) => {
 			const { store } = ctx
+
+			if (disable) {
+				return null
+			}
 
 			const promisedMapDispatchToProps = {}
 
