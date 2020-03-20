@@ -6,10 +6,13 @@ export default function expressFetchHelper() {
 			...req.headers,
 			'x-forwarded-for': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
 		}
+		const protocol = req.secure
+			? 'https'
+			: (req.headers['x-forwarded-proto'] || req.protocol)
 
 		FetchService
 			.getInstance()
-			.setClientHeaders(headers, req.protocol)
+			.setClientHeaders(headers, protocol)
 			.setClientCookiesHandler(req.universalCookies)
 
 		next()
