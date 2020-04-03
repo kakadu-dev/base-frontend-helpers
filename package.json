@@ -1,24 +1,33 @@
 {
-    "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "1.18.2",
-    "dependencies": {
-        "lodash": "^4.17.11",
-        "set-cookie-parser": "^2.4.3"
-    },
-    "description": "Base frontend helpers for reactjs and react native",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/kakadu-dev/base-frontend-helpers.git"
-    },
-    "keywords": [
-        "helpers",
-        "react",
-        "native"
-    ],
-    "author": "Yarmaliuk Mikhail",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
-    },
-    "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme"
+  "name": "@kakadu-dev/base-frontend-helpers",
+  "version": "1.18.3",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kakadu-dev/base-frontend-helpers.git"
+  },
+  "keywords": [
+    "helpers",
+    "react",
+    "native"
+  ],
+  "author": "kakadu-dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
+  },
+  "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "set-cookie-parser": "^2.4.3"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:c": "jest --coverage",
+    "build": "env ES6_MODULES=true babel src -d dist"
+  },
+  "description": "Base frontend helpers for reactjs and react native",
+  "devDependencies": {}
 }
