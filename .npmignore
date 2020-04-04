@@ -8,9 +8,12 @@
 # testing
 /coverage
 
-# production
-/build
-/dist
+# source
+/src
+
+# configs
+babel.config.js
+
 
 # idea
 .idea

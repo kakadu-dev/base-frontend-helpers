@@ -1,6 +1,6 @@
 {
   "name": "@kakadu-dev/base-frontend-helpers",
-  "version": "1.18.3",
+  "version": "1.18.4",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -29,5 +29,12 @@
     "build": "env ES6_MODULES=true babel src -d dist"
   },
   "description": "Base frontend helpers for reactjs and react native",
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "core-js": "^3.6.4"
+  }
 }
