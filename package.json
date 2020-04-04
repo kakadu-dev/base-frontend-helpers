@@ -1,6 +1,6 @@
 {
   "name": "@kakadu-dev/base-frontend-helpers",
-  "version": "1.18.4",
+  "version": "1.18.5",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -26,7 +26,8 @@
   "scripts": {
     "test": "jest",
     "test:c": "jest --coverage",
-    "build": "env ES6_MODULES=true babel src -d dist"
+    "build": "babel src -d lib",
+    "build-file": "babel src -o index.js"
   },
   "description": "Base frontend helpers for reactjs and react native",
   "devDependencies": {

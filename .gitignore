@@ -12,6 +12,9 @@
 /build
 /dist
 
+# main
+./index.js
+
 # idea
 .idea
 
