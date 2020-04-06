@@ -1,6 +1,6 @@
 {
   "name": "@kakadu-dev/base-frontend-helpers",
-  "version": "1.18.5",
+  "version": "1.18.7",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme",
   "dependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.9.0",
     "lodash": "^4.17.11",
     "set-cookie-parser": "^2.4.3"
   },
@@ -37,13 +36,9 @@
     "@babel/plugin-proposal-export-default-from": "^7.8.3",
     "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
-    "@babel/plugin-transform-classes": "^7.9.2",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
-    "@babel/preset-es2015": "^7.0.0-beta.53",
-    "babel-loader": "^8.1.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
     "core-js": "^3.6.4",
     "metro-react-native-babel-preset": "^0.59.0"
   }
