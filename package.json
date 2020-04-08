@@ -1,6 +1,6 @@
 {
   "name": "@kakadu-dev/base-frontend-helpers",
-  "version": "1.18.7",
+  "version": "1.18.11",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -10,8 +10,7 @@
   },
   "keywords": [
     "helpers",
-    "react",
-    "native"
+    "react"
   ],
   "author": "kakadu-dev",
   "license": "ISC",
@@ -26,18 +25,17 @@
   "scripts": {
     "test": "jest",
     "test:c": "jest --coverage",
-    "build": "ESM=true babel src -d ./"
+    "build": "ESM=true babel src -d ./ --copy-files"
   },
-  "description": "Base frontend helpers for reactjs and react native",
+  "description": "Base frontend helpers for ReactJS & React-Native applications",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-export-default-from": "^7.8.3",
-    "@babel/plugin-proposal-export-namespace-from": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
     "babel-plugin-module-resolver": "^4.0.0",
     "core-js": "^3.6.4",
     "metro-react-native-babel-preset": "^0.59.0"

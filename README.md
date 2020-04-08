@@ -1,4 +1,4 @@
-# Base Frontend Helpers ![version](https://img.shields.io/badge/version-1.18.3-blue)
+# Base Frontend Helpers ![version](https://img.shields.io/badge/version-1.18.11-blue)
 
 [![N|Solid](https://avatars3.githubusercontent.com/u/39901497?s=200&v=4)](https://github.com/kakadu-dev)
 
@@ -22,14 +22,7 @@ Base Frontend Helpers requires [![Node.js](https://img.shields.io/badge/Node-JS-
 
 ```sh
 $ git clone https://github.com/kakadu-dev/base-frontend-helpers.git
-```
-or
-
-#### Install the package.
-
-```sh
-$ npm install npm install @kakadu-dev/base-frontend-helpers@|CURRENT_VERSION|
-```
+``` 
 
 #### Then install the dependencies and devDependencies.
 
@@ -38,60 +31,40 @@ $ cd base-frontend-components
 $ npm install
 ```
 
-## To publish the package:
+or
 
-#### Step 1: You need to change version of the package in package.json.
-
-- example:
+#### Install the package.
 
 ```sh
-// What we have:
-"version": "1.0.4",
-
-// What we need:
-"version": "1.0.5" or "version": "1.1.0" or "version": "2.0.0"
+$ npm install npm install @kakadu-dev/base-frontend-helpers@|CURRENT_VERSION|
 ```
 
-#### Step 2: Create access TOKEN or go to the next step if you already have it.
-##### More info about GitHub access TOKEN:
-###### [![GitHub TOKEN info](https://img.shields.io/badge/GitHub_Token-info-blueviolet)](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
+#### To work with this package you need to have the following plugins:
 
-#### Step 3: Authenticate.
-
+- Set-Cookie-Parser
 ```sh
-// 1: Use this command:
-$ npm login --registry=https://npm.pkg.github.com/
-
-// 2: Enter your personal data:
-> Username: USERNAME (Like in your GitHub profile)
-> Password: TOKEN 
-// You need to have TOKEN in: 
-// Profile => Settings => Developer settings => Personal access tokens
-> Email: PUBLIC-EMAIL-ADDRESS (Your GitHub email address)
-
-That's it!
-
+$ npm install --save set-cookie-parser
 ```
 
-#### Step 4: Publish it!
-
+- Lodash
 ```sh
-$ npm publish
+$ npm i --save lodash
 ```
 
-#### More info about GitHub packages here:
-
-[![GitHub packages docs](https://img.shields.io/badge/GitHub_Packages-info-blueviolet)](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages)
+- Firebase
+```sh
+$ npm install --save firebase
+```
 
 ## Built With
-
-Base Frontend Components is currently extended with the following plugins. Instructions on how to use them in your own application are linked below.
+Base Frontend Helpers is currently extended with the following plugins. 
+Instructions on how to use them in your own application are linked below.
 
 | Plugin | README |
 | ------ | ------ |
 | Lodash | [Docs](https://lodash.com/docs/4.17.15) |
 | Firebase | [Official Documentation](https://firebase.google.com/docs?hl=ru) |
-| set-cookie-parser | [NPM Link](https://www.npmjs.com/package/set-cookie-parser) |
+| Set-Cookie-Parser | [NPM Link](https://www.npmjs.com/package/set-cookie-parser) |
 | Redux-Saga | [Tutorial](https://redux-saga.js.org/docs/introduction/BeginnerTutorial.html) 
 
 License
