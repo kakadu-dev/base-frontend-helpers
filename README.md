@@ -18,21 +18,6 @@ Base Frontend Helpers is a package of necessary helpers for ReactJS/React-Native
 
 Base Frontend Helpers requires [![Node.js](https://img.shields.io/badge/Node-JS-brightgreen)](https://nodejs.org/en/) to run.
 
-#### Clone the repo.
-
-```sh
-$ git clone https://github.com/kakadu-dev/base-frontend-helpers.git
-``` 
-
-#### Then install the dependencies and devDependencies.
-
-```sh
-$ cd base-frontend-components
-$ npm install
-```
-
-or
-
 #### Install the package.
 
 ```sh
