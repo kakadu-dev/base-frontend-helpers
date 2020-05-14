@@ -1,6 +1,6 @@
 {
   "name": "@kakadu-dev/base-frontend-helpers",
-  "version": "1.18.11",
+  "version": "1.19.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
