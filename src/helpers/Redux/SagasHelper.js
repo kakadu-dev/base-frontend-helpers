@@ -8,160 +8,52 @@ import DataProvider from '../DataProvider'
 import RequestActionHelper from './RequestActionHelper'
 
 /**
- * Default view action for response single model
- *
- * @param {object} action
- * @param {function} api
- * @param {function} beforeResponse
- * @param {function} afterResponse
- *
- * @return {undefined}
- */
-function* defaultActionView(action, api, beforeResponse, afterResponse)
-{
-	const { payload, type }           = action
-	const { id, searchQuery }         = payload
-	const { request, success, error } = RequestActionHelper.getAllActions(type)
-	const sQ                          = DataProvider.getSearchQuery(searchQuery)
-
-	try {
-		yield put(request(sQ))
-
-		if (typeof beforeResponse === 'function') {
-			yield beforeResponse(sQ, id)
-		}
-
-		const response = yield call(api, id, sQ)
-
-		yield put(success(DataProvider.handleResponseView(response), sQ))
-
-		if (typeof afterResponse === 'function') {
-			yield afterResponse(response, sQ, id)
-		}
-
-		sQ.runSuccessCallback(response)
-	} catch (e) {
-		yield put(error(sQ.addReduxRequestParams({ error: e })))
-
-		sQ.runErrorCallback(e)
-	}
-
-	sQ.runCallback()
-}
-
-/**
- * Default list action for response multiple model
- *
- * @param {object} action
- * @param {function} api
- * @param {function} beforeResponse
- * @param {function} afterResponse
- *
- * @return {undefined}
- */
-function* defaultActionList(action, api, beforeResponse, afterResponse, responseHandler)
-{
-	const { payload, type }           = action
-	const { request, success, error } = RequestActionHelper.getAllActions(type)
-	const searchQuery                 = DataProvider.getSearchQuery(payload)
-
-	try {
-		yield put(request(searchQuery))
-
-		if (typeof beforeResponse === 'function') {
-			yield beforeResponse(searchQuery)
-		}
-
-		const response = yield call(api, searchQuery)
-
-		if (!responseHandler) {
-			yield put(success(response.result, searchQuery))
-		} else {
-			yield put(success(responseHandler(response), searchQuery))
-		}
-
-		if (typeof afterResponse === 'function') {
-			yield afterResponse(response, searchQuery)
-		}
-
-		searchQuery.runSuccessCallback(response)
-	} catch (e) {
-		yield put(error(searchQuery.addReduxRequestParams({ error: e })))
-
-		searchQuery.runErrorCallback(e)
-	}
-
-	searchQuery.runCallback()
-}
-
-/**
- * Merge list models with model
- *
- * @param {object} modelsState
- * @param {object} model
- *
- * @return {undefined}
- */
-const mergeModels = (modelsState, model) => {
-	if (!modelsState || !modelsState.result || !model) {
-		return
-	}
-
-	const models     = { ...DataProvider.getDefaultState(), ...modelsState.result }
-	let productExist = false
-
-	if (model.result) {
-		for (let i = 0; i < models.list.length; i++) {
-			if (models.list[i].id === model.result.id) {
-				models.list[i] = model.result
-
-				productExist = true
-				break
-			}
-		}
-
-		if (!productExist) {
-			models.list.push(model.result)
-
-			models.pagination.totalItems++
-		}
-	}
-
-	if (
-		modelsState && modelsState.response &&
-		model.response && model.response.headers
-	) {
-		modelsState.response.headers = model.response.headers
-	}
-}
-
-/**
  * Sagas helper
  */
-export default class SagasHelper
-{
+export default class SagasHelper {
 	/**
-	 * Add customer id to request body
+	 * Default action for response
 	 *
-	 * @param {SearchQuery} searchQuery
-	 * @param {function} userSelector
+	 * @param {object} action
+	 * @param {function} api
+	 * @param {function} responseHandler
+	 * @param {function} beforeResponse
+	 * @param {function} afterResponse
 	 *
-	 * @return {IterableIterator<SelectEffect>}
+	 * @return {undefined}
 	 */
-	static* beforeAddCustomerId(searchQuery, userSelector)
-	{
-		const body = searchQuery.getBody()
+	static* defaultAction(action, api, responseHandler, beforeResponse = null, afterResponse = null) {
+		const { payload, type }           = action
+		const { request, success, error } = RequestActionHelper.getAllActions(type)
+		const searchQuery                 = DataProvider.getSearchQuery(payload)
 
-		if (!body.customerId) {
-			const currentUser = yield select(userSelector)
+		try {
+			yield put(request(searchQuery))
 
-			if (currentUser && currentUser.result && currentUser.result.id) {
-				// Add user id
-				body.customerId = currentUser.result.id
-
-				searchQuery.addBody(body, true)
+			if (typeof beforeResponse === 'function') {
+				yield beforeResponse(searchQuery)
 			}
+
+			const response = yield call(api, searchQuery)
+
+			if (!responseHandler) {
+				yield put(success(response.result, searchQuery))
+			} else {
+				yield put(success(responseHandler(response), searchQuery))
+			}
+
+			if (typeof afterResponse === 'function') {
+				yield afterResponse(response, searchQuery)
+			}
+
+			searchQuery.runSuccessCallback(response)
+		} catch (e) {
+			yield put(error(searchQuery.addReduxRequestParams({ error: e })))
+
+			searchQuery.runErrorCallback(e)
 		}
+
+		searchQuery.runCallback()
 	}
 
 	/**
@@ -173,8 +65,7 @@ export default class SagasHelper
 	 *
 	 * @return {IterableIterator<PutEffect<*>>}
 	 */
-	static* afterClearState(response, searchQuery, action)
-	{
+	static* afterClearState(response, searchQuery, action) {
 		if (response.response.status === 200) {
 			yield put(action(DataProvider.getDefaultState()))
 		}
@@ -192,8 +83,7 @@ export default class SagasHelper
 	 *
 	 * @return {IterableIterator<SelectEffect|PutEffect<*>>}
 	 */
-	static* afterDeleteModelFromList(response, searchQuery, id, getList, setList, className)
-	{
+	static* afterDeleteModelFromList(response, searchQuery, id, getList, setList, className) {
 		let model = null
 
 		if (response.response.status === 204) {
@@ -203,7 +93,8 @@ export default class SagasHelper
 				let modelId = e.id
 
 				if (className) {
-					modelId = className.create(e).primaryKey()
+					modelId = className.create(e)
+						.primaryKey()
 				}
 
 				if (modelId === id) {
@@ -218,7 +109,10 @@ export default class SagasHelper
 				models.pagination.totalItems--
 			}
 
-			yield put(setList({ ...models, response: response.response }))
+			yield put(setList({
+				...models,
+				response: response.response,
+			}))
 		}
 
 		return model
@@ -235,8 +129,7 @@ export default class SagasHelper
 	 *
 	 * @return {IterableIterator<SelectEffect|PutEffect<*>>}
 	 */
-	static* afterMergeModels(response, searchQuery, id, getList, setList)
-	{
+	static* afterMergeModels(response, searchQuery, id, getList, setList) {
 		const params = searchQuery.getCustomParams()
 
 		if (params.mergeResponse) {
@@ -251,7 +144,7 @@ export default class SagasHelper
 				modelsState.response = response
 			}
 
-			mergeModels(modelsState, response)
+			SagasHelper._mergeModels(modelsState, response)
 
 			yield put(setList(DataProvider.handleResponseList({
 				result:   modelsState.result.list,
@@ -261,107 +154,45 @@ export default class SagasHelper
 	}
 
 	/**
-	 * Default saga create action
+	 * Merge list models with model
 	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
+	 * @protected
+	 *
+	 * @param {object} modelsState
+	 * @param {object} model
 	 *
 	 * @return {undefined}
 	 */
-	static* defaultCreate(action, api, beforeResponse, afterResponse)
-	{
-		yield defaultActionList(action, api, beforeResponse, afterResponse, DataProvider.handleResponseView)
-	}
+	static _mergeModels = (modelsState, model) => {
+		if (!modelsState || !modelsState.result || !model) {
+			return
+		}
 
-	/**
-	 * Default saga update action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultUpdate(...params)
-	{
-		yield defaultActionView(...params)
-	}
+		const models     = { ...DataProvider.getDefaultState(), ...modelsState.result }
+		let productExist = false
 
-	/**
-	 * Default saga view action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultView(...params)
-	{
-		yield defaultActionView(...params)
-	}
+		if (model.result) {
+			for (let i = 0; i < models.list.length; i++) {
+				if (models.list[i].id === model.result.id) {
+					models.list[i] = model.result
 
-	/**
-	 * Default saga list action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultList(action, api, beforeResponse, afterResponse)
-	{
-		yield defaultActionList(action, api, beforeResponse, afterResponse, DataProvider.handleResponseList)
-	}
+					productExist = true
+					break
+				}
+			}
 
-	/**
-	 * Default saga delete action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultDelete(...params)
-	{
-		yield defaultActionView(...params)
-	}
+			if (!productExist) {
+				models.list.push(model.result)
 
-	/**
-	 * Default saga custom action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultCustom(...params)
-	{
-		yield defaultActionList(...params)
-	}
+				models.pagination.totalItems++
+			}
+		}
 
-	/**
-	 * Default saga delete all action
-	 *
-	 * @param {object} action
-	 * @param {function} api
-	 * @param {function} beforeResponse
-	 * @param {function} afterResponse
-	 *
-	 * @return {undefined}
-	 */
-	static* defaultDeleteAll(action, api, beforeResponse, afterResponse)
-	{
-		yield defaultActionList(action, api, beforeResponse, afterResponse, DataProvider.handleResponseList)
+		if (
+			modelsState && modelsState.response &&
+			model.response && model.response.headers
+		) {
+			modelsState.response.headers = model.response.headers
+		}
 	}
 }
