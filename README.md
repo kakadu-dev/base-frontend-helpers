@@ -1,4 +1,4 @@
-# Base Frontend Helpers ![version](https://img.shields.io/badge/version-1.19.2-blue)
+# Base Frontend Helpers ![version](https://img.shields.io/badge/version-1.19.4-blue)
 
 [![N|Solid](https://avatars3.githubusercontent.com/u/39901497?s=200&v=4)](https://github.com/kakadu-dev)
 
@@ -21,7 +21,7 @@ Base Frontend Helpers requires [![Node.js](https://img.shields.io/badge/Node-JS-
 #### Install the package.
 
 ```sh
-$ npm install npm install @kakadu-dev/base-frontend-helpers@1.19.2
+$ npm install npm install @kakadu-dev/base-frontend-helpers@1.19.4
 ```
 
 #### To work with this package you need to have the following plugins:
