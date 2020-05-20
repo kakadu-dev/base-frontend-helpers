@@ -1,8 +1,8 @@
-# Base Frontend Helpers ![version](https://img.shields.io/badge/version-1.19.4-blue)
+# Base Frontend Helpers 
+
+![Release](https://img.shields.io/github/v/release/kakadu-dev/base-frontend-helpers)
 
 [![N|Solid](https://avatars3.githubusercontent.com/u/39901497?s=200&v=4)](https://github.com/kakadu-dev)
-
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/kakadu-dev/base-frontend-helpers)
 
 Base Frontend Helpers is a package of necessary helpers for ReactJS/React-Native/Redux applications.
 # The package includes helpers for:
