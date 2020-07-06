@@ -213,7 +213,8 @@ export default class SearchQuery
 	{
 		const resultOptions = {
 			...this.requestOptions,
-			...(!_.isEmpty(this.body) ? { body: this.body } : {}),
+			// data key - for axios
+			...(!_.isEmpty(this.body) ? { data: this.body } : {}),
 		}
 
 		return resultOptions
@@ -243,7 +244,6 @@ export default class SearchQuery
 	{
 		return this.body || {}
 	}
-
 
 	/**
 	 * Add custom params (eg. for condition in sagas)

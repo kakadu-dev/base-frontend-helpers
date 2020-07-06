@@ -1,3 +1,4 @@
+import axios from 'axios'
 import _ from 'lodash'
 import { CacheHelper } from '../helpers/CacheHelper'
 import DataProvider from '../helpers/DataProvider'
@@ -68,14 +69,6 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 	// Merge default headers with custom headers
 	const requestOptions = _.merge(defaultOptions, dataProvider.getRequestOptions())
 
-	if (requestOptions.body) {
-		if (['get', 'head'].includes(requestOptions.method.toLowerCase())) {
-			delete requestOptions.body
-		} else {
-			requestOptions.body = JSON.stringify(requestOptions.body)
-		}
-	}
-
 	// Return only request options
 	if (returnRequest && !saveAuth) {
 		return {
@@ -94,40 +87,25 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 	}
 
 	let body     = null
-	let response = { ok: false }
+	let error    = null
+	let response = {}
 
 	try {
 		// Request
-		response = await fetch(fullUrl, requestOptions)
-
-		const isJson = (response && response.headers && response.headers.get('content-type') || '')
-			.includes('json')
-
-		if (isJson) {
-			body = await response.json()
-		} else {
-			const isBlob = (
-							   response
-							   && response.headers
-							   && response.headers.get('content-disposition') || ''
-						   ).length > 0
-
-			body = isBlob
-				? await response.blob()
-				: await response.text()
-		}
+		response = await axios.request({ url: fullUrl, ...requestOptions })
+		body     = response.body
 	} catch (e) {
-		//
+		error = e
 	}
 
 	const result = {
 		result: body,
-		error:  !response.ok,
+		error,
 		response,
 	}
 
 	// Cache response
-	if (cacheResponse && response.ok) {
+	if (cacheResponse && error === null) {
 		CacheHelper.setItem(fullUrl, result, cacheResponse, 'fetch')
 	}
 
@@ -181,14 +159,11 @@ export function* callApi(endpoint, options, config = {})
 	}
 
 	if (result.error) {
-		const { result: error, response } = result
-
-		const statusCode  = Number(response.status)
-		const resultError = error
+		const { error, response } = result
 
 		// Custom handle request error
 		if (handleError) {
-			const handleErrorResult = yield handleError(statusCode, resultError, dataProvider, endpoint, options)
+			const handleErrorResult = yield handleError(response.status, error, dataProvider, endpoint, options)
 
 			if (handleErrorResult) {
 				return handleErrorResult
@@ -196,7 +171,7 @@ export function* callApi(endpoint, options, config = {})
 		}
 
 		const customError = new Error(
-			resultError && (resultError.message || JSON.stringify(resultError)) || 'Unknown error',
+			error && (error.message || JSON.stringify(error)) || 'Unknown error',
 		)
 
 		customError.messageData = response

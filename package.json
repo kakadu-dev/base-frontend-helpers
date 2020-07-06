@@ -1,7 +1,8 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "1.18.2",
+    "version": "2.0.0",
     "dependencies": {
+        "axios": "^0.19.2",
         "lodash": "^4.17.11",
         "set-cookie-parser": "^2.4.3"
     },
