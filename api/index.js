@@ -5,6 +5,22 @@ import DataProvider from '../helpers/DataProvider'
 import SearchQuery from '../helpers/DataProvider/SearchQuery'
 
 /**
+ * Url and request body to hash string
+ *
+ * @param {string} url
+ * @param {*} data
+ *
+ * @return {string}
+ */
+const getCacheKey = (url, data) => {
+	const body = data && data.method
+				 ? { method: data.method, params: data.params }
+				 : data
+	const dataHash = typeof body === 'object' ? JSON.stringify(body) : body;
+	return `${url}:::${body}`
+}
+
+/**
  * Build full url with query string
  *
  * @param {string} endpoint
@@ -77,9 +93,10 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 		}
 	}
 
+	const cacheKey = getCacheKey(fullUrl, requestOptions.data)
 	// Try get cached response (may not working if __DEV__, check data provider request)
 	if (cacheResponse) {
-		const cachedResult = await CacheHelper.getItem(fullUrl, 'fetch', cacheResponse)
+		const cachedResult = await CacheHelper.getItem(cacheKey, 'fetch', cacheResponse)
 
 		if (cachedResult) {
 			return cachedResult
@@ -106,7 +123,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {})
 
 	// Cache response
 	if (cacheResponse && error === null) {
-		CacheHelper.setItem(fullUrl, result, cacheResponse, 'fetch')
+		CacheHelper.setItem(cacheKey, result, cacheResponse, 'fetch')
 	}
 
 	if (successCallback) {
