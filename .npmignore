@@ -3,7 +3,8 @@
 
 # testing
 /coverage
-tests
+/tests
+jest.config.js
 
 # source
 /src
