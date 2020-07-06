@@ -37,7 +37,7 @@ export default class RequestActionHelper
 	 *
 	 * @param {string} key
 	 *
-	 * @return {string}
+	 * @return {function}
 	 */
 	static getActionCreatorFetch(key)
 	{
@@ -49,11 +49,11 @@ export default class RequestActionHelper
 	 *
 	 * @param {string} key
 	 *
-	 * @return {string}
+	 * @return {function}
 	 */
 	static getActionCreatorRequest(key)
 	{
-		return (searchQuery) => ({
+		return searchQuery => ({
 			type:   this.getAction(key, 'request'),
 			params: searchQuery,
 		})
@@ -64,11 +64,11 @@ export default class RequestActionHelper
 	 *
 	 * @param {string} key
 	 *
-	 * @return {string}
+	 * @return {function}
 	 */
 	static getActionCreatorError(key)
 	{
-		return (searchQuery) => ({
+		return searchQuery => ({
 			type:   this.getAction(key, 'error'),
 			params: searchQuery,
 		})
@@ -79,7 +79,7 @@ export default class RequestActionHelper
 	 *
 	 * @param {string} key
 	 *
-	 * @return {string}
+	 * @return {function}
 	 */
 	static getActionCreatorSuccess(key)
 	{
@@ -95,7 +95,7 @@ export default class RequestActionHelper
 	 *
 	 * @param {string} key
 	 *
-	 * @return {{request: string, success: string, error: string}}
+	 * @return {{request: function, success: function, error: function}}
 	 */
 	static getAllActions(key)
 	{

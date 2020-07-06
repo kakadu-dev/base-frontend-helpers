@@ -4,16 +4,13 @@
 # testing
 /coverage
 
-# main
-./index.js
-/api
-/firebase
-/forms
-/helpers
-/middleware
-/sagas
-/services
-/storage
+# source
+/src
+/react-native
+
+# configs
+babel.config.js
+
 
 # idea
 .idea

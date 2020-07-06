@@ -1,25 +1,46 @@
 {
-    "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "2.0.0",
-    "dependencies": {
-        "axios": "^0.19.2",
-        "lodash": "^4.17.11",
-        "set-cookie-parser": "^2.4.3"
-    },
-    "description": "Base frontend helpers for reactjs and react native",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/kakadu-dev/base-frontend-helpers.git"
-    },
-    "keywords": [
-        "helpers",
-        "react",
-        "native"
-    ],
-    "author": "Yarmaliuk Mikhail",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
-    },
-    "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme"
+  "name": "@kakadu-dev/base-frontend-helpers",
+  "version": "1.19.4",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kakadu-dev/base-frontend-helpers.git"
+  },
+  "keywords": [
+    "helpers",
+    "react"
+  ],
+  "author": "kakadu-dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kakadu-dev/base-frontend-helpers/issues"
+  },
+  "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "lodash": "^4.17.11",
+    "set-cookie-parser": "^2.4.3"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:c": "jest --coverage",
+    "build": "ESM=true babel src -d ./ --copy-files"
+  },
+  "description": "Base frontend helpers for ReactJS & React-Native applications",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "core-js": "^3.6.4",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "jest": "^25.2.3",
+    "babel-jest": "^25.2.3"
+  }
 }

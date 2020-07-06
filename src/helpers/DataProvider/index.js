@@ -193,7 +193,7 @@ export default class DataProvider
 	}
 
 	/**
-	 * Get search query helper
+	 * Get search query request options from object
 	 *
 	 * @param {SearchQuery|object} searchQuery
 	 *
@@ -206,6 +206,22 @@ export default class DataProvider
 		return result instanceof SearchQuery
 			? result
 			: DataProvider.buildQuery().addRequestOptions(result)
+	}
+	
+	/**
+	 * Get search query request body from object
+	 *
+	 * @param {SearchQuery|object} searchQuery
+	 *
+	 * @return {SearchQuery}
+	 */
+	static getSearchQueryBody(searchQuery)
+	{
+		const result = searchQuery && searchQuery.searchQuery || searchQuery
+
+		return result instanceof SearchQuery
+			? result
+			: DataProvider.buildQuery().addBody(result)
 	}
 
 	/**
