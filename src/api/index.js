@@ -110,7 +110,8 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         response = await axios.request({ url: fullUrl, ...requestOptions })
         body     = response.data
     } catch (e) {
-        error = e
+        error    = e
+        response = e.response
     }
 
     const result = {
