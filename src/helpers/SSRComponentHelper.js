@@ -61,6 +61,8 @@ class SSRComponentHelper
 				newParams = param
 			} else if (param.searchQuery instanceof SearchQuery) {
 				newParams = param.searchQuery
+			} else if (param[0] instanceof SearchQuery) {
+				newParams = param[0];
 			} else {
 				param.searchQuery = newParams = DataProvider.buildQuery()
 			}
