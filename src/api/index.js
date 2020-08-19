@@ -111,7 +111,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         body     = response.data
     } catch (e) {
         error    = e
-        response = e.response
+        response = e.response || { status: 502 }
     }
 
     const result = {
