@@ -91,7 +91,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         }
     }
 
-    const cacheKey = getCacheKey(fullUrl, requestOptions.data)
+    const cacheKey = getCacheKey(fullUrl, { ...requestOptions.data, auth: requestHeaders.Authorization || 'guest' })
     // Try get cached response (may not working if __DEV__, check data provider request)
     if (cacheResponse) {
         const cachedResult = await CacheHelper.getItem(cacheKey, 'fetch', cacheResponse)
