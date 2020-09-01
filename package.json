@@ -1,6 +1,6 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "2.2.1",
+    "version": "2.2.3",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
     },
@@ -32,9 +32,9 @@
         "clean": "rm -rf lib",
         "test": "jest",
         "test:c": "jest --coverage",
-        "build": "BABEL_ENV=production ESM=true babel src -d lib --copy-files --delete-dir-on-start",
+        "build": "BABEL_ENV=production ESM=true babel src -d . --copy-files",
         "prepublish": "./publish-hooks.sh",
-        "postpublish": "./publish-hooks.sh revert"
+        "postpublish": "./publish-hooks.sh revert && git clean -fd"
     },
     "description": "Base frontend helpers for ReactJS & React-Native applications",
     "devDependencies": {
