@@ -6,14 +6,8 @@
 
 # main
 ./index.js
-/api
-/firebase
-/forms
-/helpers
-/middleware
-/sagas
-/services
-/storage
+lib
+*.tgz
 
 # idea
 .idea
