@@ -160,19 +160,22 @@ export default class BaseForm
 	 */
 	createImageUrl = (createApiUrl, updateApiUrl, addPrimaryKey = true) => {
 		const callback = (searchQuery, id) => {
-			const args       = []
 			const primaryKey = id || this.model && this.model.primaryKey()
 
+			const sQ = searchQuery()
+
 			if (primaryKey && addPrimaryKey) {
-				args.push(primaryKey)
+				sQ.addBody({
+					[this.model?.primary?.() ?? 'id']: primaryKey
+				})
 			}
 
-			args.push(searchQuery().addCustomParams({ returnRequest: true }))
+			sQ.addCustomParams({ returnRequest: true })
 
 			return GeneratorHelper.executeCallApi(
-				args.length > 1 && updateApiUrl
-					? updateApiUrl.apply(this, args)
-					: createApiUrl.apply(this, args),
+				primaryKey > 1 && updateApiUrl
+					? updateApiUrl.apply(this, [sQ])
+					: createApiUrl.apply(this, [sQ]),
 			)
 		}
 

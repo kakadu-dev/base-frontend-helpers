@@ -162,7 +162,7 @@ export default class StateService
 	 * @return {*}
 	 */
 	getResultKey = (key, defaultValue = null) => {
-		return this.state.result && this.state.result[key] || defaultValue
+		return _.get(this.state.result || {}, key, defaultValue)
 	}
 
 	/**

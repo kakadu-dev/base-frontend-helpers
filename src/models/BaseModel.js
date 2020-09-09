@@ -142,4 +142,11 @@ export default class BaseModel {
     primaryKey() {
         return this.model.id
     }
+
+    /**
+     * Return primary key name
+     *
+     * @return {string}
+     */
+    primary = () => 'id'
 }

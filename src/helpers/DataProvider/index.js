@@ -36,6 +36,8 @@ export default class DataProvider
 	 * @param {object} headers
 	 * @param {string} key
 	 *
+	 * @deprecated
+	 *
 	 * @return {null|*}
 	 */
 	static getHeader(headers, key)
@@ -98,7 +100,10 @@ export default class DataProvider
 	{
 		const { result, response: { headers } } = response
 
-		if (Array.isArray(result) || Number(DataProvider.getHeader(headers, 'X-Pagination-Current-Page'))) {
+		if (
+			(Array.isArray(result) || Array.isArray(result?.list)) ||
+			(result?.pagination?.totalItems ?? null) !== null
+		) {
 			return DataProvider.handleResponseList(response)
 		}
 
@@ -132,15 +137,16 @@ export default class DataProvider
 	static handleResponseList(response, emulateState = false)
 	{
 		const { result, response: resp } = response
-		const headers                    = resp && resp.headers || {}
+		const headers                    = result?.pagination ?? resp?.headers ?? {}
 
 		const output = {
-			list:       result || [],
+			list:       result?.list ?? result,
+			...(result?.headers ? { payload: result.headers } : {}),
 			pagination: {
-				totalItems:  Number(DataProvider.getHeader(headers, 'X-Pagination-Total-Count')),
-				pageCount:   Number(DataProvider.getHeader(headers, 'X-Pagination-Page-Count')),
-				currentPage: Number(DataProvider.getHeader(headers, 'X-Pagination-Current-Page')),
-				perPage:     Number(DataProvider.getHeader(headers, 'X-Pagination-Per-Page')),
+				totalItems:  Number(headers?.totalItems ?? 0),
+				pageCount:   Number(headers?.pageCount ?? 0),
+				currentPage: Number(headers?.currentPage ?? 1),
+				perPage:     Number(headers?.perPage ?? 0),
 			},
 			response:   resp,
 		}
@@ -207,7 +213,7 @@ export default class DataProvider
 			? result
 			: DataProvider.buildQuery().addRequestOptions(result)
 	}
-	
+
 	/**
 	 * Get search query request body from object
 	 *

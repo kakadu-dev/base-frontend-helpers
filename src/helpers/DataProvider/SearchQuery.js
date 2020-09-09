@@ -62,21 +62,18 @@ export default class SearchQuery
 	 * Add common filter
 	 *
 	 * @param {object} condition
-	 * @param {string} unionBy
-	 * @param {mixed} checkValue
+	 * @param {number|string|null} checkValue
 	 *
 	 * @return {SearchQuery}
 	 */
-	addFilter(condition, unionBy, checkValue)
+	addFilter(condition, checkValue)
 	{
 		if (!this.query.filter) {
-			this.query.filter = []
+			this.query.filter = {}
 		}
 
 		if (checkValue !== null && checkValue !== '') {
-			const concat = !unionBy ? 'and' : unionBy
-
-			this.query.filter.push({ [concat]: condition })
+			this.query.filter = _.merge(this.query.filter, { ...condition })
 		}
 
 		return this
@@ -128,7 +125,7 @@ export default class SearchQuery
 	/**
 	 * Set current page
 	 *
-	 * @param {number} page
+	 * @param {number|string} page all - for all pages
 	 *
 	 * @return {SearchQuery}
 	 */
@@ -139,7 +136,11 @@ export default class SearchQuery
 				this.query.pagination = {}
 			}
 
-			this.query.pagination.page = page
+			if (page === 'all') {
+				this.query.pagination.allPage = true
+			} else {
+				this.query.pagination.page = page
+			}
 		}
 
 		return this
@@ -178,7 +179,7 @@ export default class SearchQuery
 			this.query.expands = []
 		}
 
-		this.query.expands.push(expandName)
+		this.query.expands.push(...expandName)
 
 		return this
 	}
@@ -242,7 +243,29 @@ export default class SearchQuery
 	 */
 	getBody()
 	{
-		return this.body || {}
+		const {
+				  filter,
+				  extraFilter,
+				  expands,
+				  orderBy,
+				  pagination,
+			  } = this.query
+
+		const { page, perPage, allPage } = pagination || {}
+
+		const query = {
+			...(filter ? { filter } : {}),
+			...(expands && expands.length ? { expands } : {}),
+			...(orderBy && orderBy.length? { orderBy } : {}),
+			...(page ? { page } : {}),
+			...(perPage ? { perPage } : {}),
+			...(allPage ? { allPage } : {})
+		}
+
+		return _.merge({}, this.body || {}, {
+			...(Object.keys(query).length > 0 ? { query } : {}),
+			...(extraFilter ? { extraFilter } : {})
+		})
 	}
 
 	/**
@@ -274,98 +297,29 @@ export default class SearchQuery
 	 * Set query param
 	 *
 	 * @param {string} param
-	 * @param {string|number} value
+	 * @param {string|number|null} value
 	 *
 	 * @return {SearchQuery}
 	 */
 	setQueryParam(param, value)
 	{
-		this.queryParams[param] = value
+		if (this.queryParams[param] && (value !== null || value !== undefined)) {
+			delete this.queryParams[param]
+		} else {
+			this.queryParams[param] = value
+		}
 
 		return this
 	}
 
 	/**
-	 * Convert query to filter object
+	 * Get url query params (e.g.: ?some=query&param=s)
 	 *
-	 * @return {{}}
+	 * @return {Object}
 	 */
-	toFilter()
+	getQueryParams()
 	{
-		const result = { ...this.query }
-
-		if (result.filter) {
-			if (result.filter.length) {
-				result.filter = { 'and': result.filter }
-			} else {
-				delete result.filter
-			}
-		}
-
-		if (result.orderBy) {
-			result.orderBy = result.orderBy.join(',')
-		}
-
-		if (result.expands) {
-			result.expands = result.expands.join(',')
-		}
-
-		return result
-	}
-
-	/**
-	 * Get url params
-	 *
-	 * @return {string}
-	 */
-	buildUrlParams()
-	{
-		const urlParams = {}
-
-		const {
-				  filter,
-				  extraFilter,
-				  expands,
-				  orderBy,
-				  pagination,
-			  } = this.toFilter()
-
-		if (filter) {
-			urlParams.filter = JSON.stringify(filter)
-		}
-
-		if (extraFilter) {
-			urlParams.extraFilter = JSON.stringify(extraFilter)
-		}
-
-		if (expands) {
-			urlParams.expand = expands
-		}
-
-		if (orderBy) {
-			urlParams.sort = orderBy
-		}
-
-		if (pagination) {
-			if (pagination.page) {
-				urlParams.page = pagination.page
-			}
-
-			if (pagination.perPage) {
-				urlParams['per-page'] = pagination.perPage
-			}
-		}
-
-		// Add query params
-		Object.entries(this.queryParams).map(([param, value]) => {
-			if (value !== null || value !== undefined) {
-				urlParams[param] = value
-			}
-
-			return null
-		})
-
-		return urlParams
+		return this.queryParams
 	}
 
 	/**
@@ -455,8 +409,8 @@ export default class SearchQuery
 	addReduxRequestParams(params, merge = true)
 	{
 		const result = params instanceof ReduxQuery
-			? params.getParams()
-			: params
+					   ? params.getParams()
+					   : params
 
 		this.reduxRequestParams = merge && _.merge(this.reduxRequestParams, result) || result
 

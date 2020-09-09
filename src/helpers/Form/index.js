@@ -265,13 +265,6 @@ export class FormComponent extends Component
 			formValues[field] = value
 		})
 
-		// Normalize array values
-		Object.entries(formValues).forEach(([field, value]) => {
-			if (isStringifyValues && typeof value === 'object') {
-				formValues[field] = JSON.stringify(value)
-			}
-		})
-
 		return formValues
 	}
 

@@ -31,7 +31,7 @@ const getCacheKey = (url, data) => {
 export function getFullUrl(endpoint, dataProvider) {
     // Remove end slash if exist and add get params
     const resultEndpoint = endpoint.replace(/\/$/, '')
-    const queryParams    = Object.entries(dataProvider.buildUrlParams()).map(([key, value]) => {
+    const queryParams    = Object.entries(dataProvider.getQueryParams()).map(([key, value]) => {
         return `${key}=${encodeURIComponent(value)}`
     }).join('&')
 

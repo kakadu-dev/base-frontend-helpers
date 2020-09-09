@@ -13,7 +13,7 @@ export class GeneratorHelper
 	 */
 	static executeCallApi(generator, val)
 	{
-		const {done, value} = generator.next(val)
+		const { done, value } = generator.next(val)
 
 		if (done) {
 			return value
