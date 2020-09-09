@@ -27,9 +27,9 @@ export default class BaseModel {
      * @return {undefined}
      */
     constructor(object) {
-        const obj = object && object.result
-            || object && typeof object.fetching === 'undefined' && object
-            || {}
+        const obj = object?.result?.model
+                    ?? object?.result
+                    ?? (typeof object?.fetching === 'undefined' && object || {})
 
         /**
          * Detect object like state
@@ -87,10 +87,10 @@ export default class BaseModel {
      */
     static getArrayObjects(object) {
         const list = Array.isArray(object && object.result && object.result.list) && object.result.list
-            || Array.isArray(object && object.list) && object.list
-            || Array.isArray(object && object.result) && object.result
-            || Array.isArray(object) && object
-            || []
+                     || Array.isArray(object && object.list) && object.list
+                     || Array.isArray(object && object.result) && object.result
+                     || Array.isArray(object) && object
+                     || []
 
         return list
     }
@@ -108,8 +108,8 @@ export default class BaseModel {
     getRelation = (name, model, instance, many = false) => {
         if (!this.relations[name]) {
             this.relations[name] = !many
-                ? new model(this.model[name] || instance || {})
-                : model.createList(this.model[name] || instance || [])
+                                   ? new model(this.model[name] || instance || {})
+                                   : model.createList(this.model[name] || instance || [])
         }
 
         return this.relations[name]
