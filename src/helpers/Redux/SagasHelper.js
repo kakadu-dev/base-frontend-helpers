@@ -76,25 +76,27 @@ export default class SagasHelper {
 	 *
 	 * @param {object} response
 	 * @param {SearchQuery}  searchQuery
-	 * @param {string|number} id
 	 * @param {function} getList
 	 * @param {function} setList
 	 * @param {BaseModel} className
 	 *
 	 * @return {IterableIterator<SelectEffect|PutEffect<*>>}
 	 */
-	static* afterDeleteModelFromList(response, searchQuery, id, getList, setList, className) {
-		let model = null
+	static* afterDeleteModelFromList(response, searchQuery, getList, setList, className) {
+		let model    = null
+		const status = response?.response?.status ?? 0
+		const id     = className
+					   ? className.create(response).primaryKey()
+					   : (response?.result?.model?.id ?? response?.result?.id ?? 0)
 
-		if (response.response.status === 204) {
+		if (status === 200 && id > 0) {
 			const { result: models } = yield select(getList)
 
 			_.remove(models.list, e => {
 				let modelId = e.id
 
 				if (className) {
-					modelId = className.create(e)
-						.primaryKey()
+					modelId = className.create(e).primaryKey()
 				}
 
 				if (modelId === id) {
@@ -123,13 +125,12 @@ export default class SagasHelper {
 	 *
 	 * @param {object} response
 	 * @param {SearchQuery} searchQuery
-	 * @param {number|string} id
 	 * @param {function} getList
 	 * @param {function} setList
 	 *
 	 * @return {IterableIterator<SelectEffect|PutEffect<*>>}
 	 */
-	static* afterMergeModels(response, searchQuery, id, getList, setList) {
+	static* afterMergeModels(response, searchQuery, getList, setList) {
 		const params = searchQuery.getCustomParams()
 
 		if (params.mergeResponse) {
@@ -147,7 +148,7 @@ export default class SagasHelper {
 			SagasHelper._mergeModels(modelsState, response)
 
 			yield put(setList(DataProvider.handleResponseList({
-				result:   modelsState.result.list,
+				result:   modelsState.result,
 				response: modelsState.response,
 			})))
 		}
@@ -164,17 +165,17 @@ export default class SagasHelper {
 	 * @return {undefined}
 	 */
 	static _mergeModels = (modelsState, model) => {
-		if (!modelsState || !modelsState.result || !model) {
+		const modelOrig = model?.result?.model ?? model?.result ?? model
+		const modelsRes = modelsState?.result ?? null
+		if (!modelsRes || !modelOrig) {
 			return
 		}
 
-		const models     = { ...DataProvider.getDefaultState(), ...modelsState.result }
 		let productExist = false
-
-		if (model.result) {
-			for (let i = 0; i < models.list.length; i++) {
-				if (models.list[i].id === model.result.id) {
-					models.list[i] = model.result
+		if (modelOrig) {
+			for (let i = 0; i < modelsRes.list.length; i++) {
+				if (modelsRes.list[i].id === modelOrig.id) {
+					modelsRes.list[i] = modelOrig
 
 					productExist = true
 					break
@@ -182,17 +183,14 @@ export default class SagasHelper {
 			}
 
 			if (!productExist) {
-				models.list.push(model.result)
+				modelsRes.list.push(modelOrig)
 
-				models.pagination.totalItems++
+				modelsRes.pagination.totalItems++
 			}
 		}
 
-		if (
-			modelsState && modelsState.response &&
-			model.response && model.response.headers
-		) {
-			modelsState.response.headers = model.response.headers
+		if (modelsRes.payload) {
+			modelsRes.payload = _.merge(modelsRes.payload, model?.result?.headers ?? model?.result?.payload ?? {})
 		}
 	}
 }

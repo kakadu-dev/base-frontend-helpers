@@ -142,6 +142,7 @@ export default class DataProvider
 		const output = {
 			list:       result?.list ?? result,
 			...(result?.headers ? { payload: result.headers } : {}),
+			...(result?.payload ? { payload: result.payload } : {}),
 			pagination: {
 				totalItems:  Number(headers?.totalItems ?? 0),
 				pageCount:   Number(headers?.pageCount ?? 0),
