@@ -37,7 +37,7 @@ export default class SagasHelper {
 			const response = yield call(api, searchQuery)
 
 			if (!responseHandler) {
-				yield put(success(response.result, searchQuery))
+				yield put(success(DataProvider.handleResponse(response), searchQuery))
 			} else {
 				yield put(success(responseHandler(response), searchQuery))
 			}

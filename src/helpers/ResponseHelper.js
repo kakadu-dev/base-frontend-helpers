@@ -1,4 +1,4 @@
-import { TYPE } from './Client'
+import { TYPE } from './Client';
 
 /**
  * Response helper
@@ -13,23 +13,22 @@ export default class ResponseHelper
 	 *
 	 * @return {object}
 	 */
-	static parseHeaders(object, key, defaultValue = null)
-	{
+	static parseHeaders(object, key, defaultValue = null) {
 		if (!object) {
-			return defaultValue
+			return defaultValue;
 		}
 
 		const obj = object && object.response && object.response.headers
 					|| object && object.headers
-					|| object
+					|| object;
 
 		if (typeof obj.get === 'function') {
-			return ResponseHelper.parseEncodedHeader(obj.get(key)) || defaultValue
+			return ResponseHelper.parseEncodedHeader(obj.get(key)) || defaultValue;
 		} else if (obj && obj.map) {
-			return obj.map[key.toLowerCase()] || defaultValue
+			return obj.map[key.toLowerCase()] || defaultValue;
 		}
 
-		return defaultValue
+		return defaultValue;
 	}
 
 	/**
@@ -39,26 +38,25 @@ export default class ResponseHelper
 	 *
 	 * @return {(object | null)}
 	 */
-	static parseEncodedHeader(value)
-	{
+	static parseEncodedHeader(value) {
 		if (!value) {
-			return null
+			return null;
 		}
 
 		if (value.indexOf('=') === -1) {
-			return value
+			return value;
 		}
 
-		const properties = value && value.split('; ') || []
-		const obj        = {}
+		const properties = value && value.split('; ') || [];
+		const obj        = {};
 
 		properties.forEach(property => {
-			const [k, v] = property.split('=')
+			const [k, v] = property.split('=');
 
-			obj[k] = v
-		})
+			obj[k] = v;
+		});
 
-		return obj
+		return obj;
 	}
 
 	/**
@@ -68,28 +66,25 @@ export default class ResponseHelper
 	 *
 	 * @return {object}
 	 */
-	static cleanResponse(response)
-	{
+	static cleanResponse(response) {
 		const {
-				  type,
 				  status,
 				  ok,
 				  headers,
-			  } = response || {}
+			  } = response || {};
 
 		if (headers && TYPE !== 'web') {
 			if (typeof headers.delete === 'function') {
-				headers.delete('link')
+				headers.delete('link');
 			} else if (headers.map) {
-				headers.map.link = undefined
+				headers.map.link = undefined;
 			}
 		}
 
 		return {
-			type,
 			status,
-			ok,
+			ok: status >= 200 && status <= 299,
 			headers,
-		}
+		};
 	}
 }
