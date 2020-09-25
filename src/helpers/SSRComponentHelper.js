@@ -16,7 +16,7 @@ class SSRComponentHelper
 	 *
 	 * @return {Promise.<function>|null}
 	 */
-	static initialProps(callback, mapDispatchToProps, disable = false)
+	static initialProps(callback, mapDispatchToProps = {}, disable = false)
 	{
 		return async (ctx) => {
 			const { store } = ctx
@@ -63,8 +63,6 @@ class SSRComponentHelper
 				newParams = param.searchQuery
 			} else if (param[0] instanceof SearchQuery) {
 				newParams = param[0];
-			} else {
-				param.searchQuery = newParams = DataProvider.buildQuery()
 			}
 		}
 
