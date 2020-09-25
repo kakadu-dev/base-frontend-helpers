@@ -47,4 +47,13 @@ export default class StateResponseService
 	getStatus = () => {
 		return this.state && this.state.status || 0
 	}
+
+	/**
+	 * Is ok response
+	 *
+	 * @return {boolean}
+	 */
+	isOk = () => {
+		return !!this.state.ok
+	}
 }
