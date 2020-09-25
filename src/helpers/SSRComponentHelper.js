@@ -67,7 +67,11 @@ class SSRComponentHelper
 		}
 
 		if (!newParams) {
-			param = newParams = DataProvider.buildQuery()
+			if (Array.isArray(param)) {
+				param[0] = newParams = DataProvider.buildQuery();
+			} else {
+				param = newParams = DataProvider.buildQuery();
+			}
 		}
 
 		const prevSuccessCallback = newParams.success
