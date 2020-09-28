@@ -1,6 +1,6 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
-    "version": "2.2.9",
+    "version": "2.2.10",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
     },
@@ -27,7 +27,7 @@
         "lib": "lib",
         "test": "tests"
     },
-    "main": "src/index.js",
+    "main": "lib/index.js",
     "scripts": {
         "clean": "git clean -fd",
         "test": "jest",
