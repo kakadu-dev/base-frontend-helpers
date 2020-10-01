@@ -10,12 +10,15 @@ export default class ComponentHelper
      * @param {Object|null|undefined} storeProp
      * @param {function} callback
      * @param {Object|null|undefined} callbackParams
+     * @param {boolean|undefined} isList
      *
      * @return {ComponentHelper}
      */
-    static fetchIfNotExist(storeProp, callback, callbackParams)
+    static fetchIfNotExist(storeProp, callback, callbackParams, isList)
     {
-        if (storeProp === null || (storeProp.result !== undefined && storeProp.result === null)) {
+        if ((isList && !storeProp?.result?.list?.length) ||
+            (storeProp === null || storeProp.result !== undefined && storeProp.result === null)) {
+
             callback(callbackParams)
         }
 
