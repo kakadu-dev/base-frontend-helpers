@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 /**
  * Profiling service
  */
@@ -56,7 +58,7 @@ export default class ProfilingService
 	{
 		Object
 			.entries(this._commands?.[commandId] ?? {})
-			.map(callback => callback(params))
+			.map(([key, callback]) => callback(params))
 
 		return this
 	}
@@ -72,7 +74,7 @@ export default class ProfilingService
 	 */
 	attach(commandId, callback, attachId = 'common')
 	{
-		this._commands[commandId][attachId] = callback
+		_.set(this._commands, `${commandId}.${attachId}`, callback)
 
 		return this
 	}

@@ -65,7 +65,8 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
               saveAuth,
           } = dataProvider.getCustomParams()
 
-    ProfilingService.run('beforeRequest', { endpoint, dataProvider, config, pld: {} })
+    const pld = {}
+    ProfilingService.run('beforeRequest', { endpoint, dataProvider, config, pld })
 
     // Complete url address
     const url     = (endpoint.indexOf('http') === -1)
@@ -100,7 +101,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         const cachedResult = await CacheHelper.getItem(cacheKey, 'fetch', cacheResponse)
 
         if (cachedResult) {
-            ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: true, pld: {} })
+            ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: true, pld })
             return cachedResult
         }
     }
@@ -136,7 +137,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         await successCallback(result, dataProvider.getCustomParams())
     }
 
-    ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: false, pld: {} })
+    ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: false, pld })
 
     return result
 }
