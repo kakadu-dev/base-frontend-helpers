@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { CacheHelper } from '../helpers/CacheHelper'
 import DataProvider from '../helpers/DataProvider'
 import SearchQuery from '../helpers/DataProvider/SearchQuery'
+import ProfilingService from '../services/ProfilingService'
 
 /**
  * Url and request body to hash string
@@ -64,6 +65,8 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
               saveAuth,
           } = dataProvider.getCustomParams()
 
+    ProfilingService.run('beforeRequest', { endpoint, dataProvider, config, pld: {} })
+
     // Complete url address
     const url     = (endpoint.indexOf('http') === -1)
         ? (domain + endpoint)
@@ -97,6 +100,7 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
         const cachedResult = await CacheHelper.getItem(cacheKey, 'fetch', cacheResponse)
 
         if (cachedResult) {
+            ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: true, pld: {} })
             return cachedResult
         }
     }
@@ -131,6 +135,8 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
     if (successCallback) {
         await successCallback(result, dataProvider.getCustomParams())
     }
+
+    ProfilingService.run('beforeReturnResponse', { endpoint, dataProvider, config, cached: false, pld: {} })
 
     return result
 }
