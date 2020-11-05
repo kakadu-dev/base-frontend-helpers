@@ -17,7 +17,7 @@ const getCacheKey = (url, data) => {
                  ? { method: data.method, params: data.params }
                  : data
     const dataHash = typeof body === 'object' ? JSON.stringify(body) : body;
-    return `${url}:::${body}`
+    return `${url}:::${dataHash}`
 }
 
 /**
@@ -122,7 +122,10 @@ export async function callApiEndpoint(endpoint, dataProvider, config = {}) {
 
     // Cache response
     if (cacheResponse && error === null) {
-        CacheHelper.setItem(cacheKey, result, cacheResponse, 'fetch')
+        CacheHelper.setItem(cacheKey, {
+            ...result,
+            response: _.pick(['status', 'statusText', 'headers'])
+        }, cacheResponse, 'fetch')
     }
 
     if (successCallback) {
