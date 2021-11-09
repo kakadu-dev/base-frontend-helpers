@@ -1,6 +1,7 @@
 {
     "name": "@kakadu-dev/base-frontend-helpers",
     "version": "2.3.3",
+    "type": "module",
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/"
     },
@@ -20,7 +21,7 @@
     "homepage": "https://github.com/kakadu-dev/base-frontend-helpers#readme",
     "dependencies": {
         "axios": "^0.19.2",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.21",
         "set-cookie-parser": "^2.4.3"
     },
     "directories": {
